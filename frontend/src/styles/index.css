@@ -16,6 +16,13 @@
   --warn: #b7791f;
   --block: #b4452f;
   --fallback: #6e6a86;
+  /* Chart marks (validated with the dataviz palette checks against --surface). */
+  --series-1: #2f5bea;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --chart-auto: #2e7d4f;
+  --chart-review: #e0a21c;
+  --chart-reject: #b8342b;
   color-scheme: light;
 }
 
@@ -33,6 +40,12 @@
   --warn: #e0a84a;
   --block: #e27a62;
   --fallback: #a6a1c4;
+  --series-1: #6d8bff;
+  --series-2: #d95926;
+  --series-3: #199e70;
+  --chart-auto: #2b8653;
+  --chart-review: #b08f1a;
+  --chart-reject: #d44574;
   color-scheme: dark;
 }
 

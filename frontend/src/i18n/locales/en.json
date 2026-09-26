@@ -215,5 +215,103 @@
   },
   "common": {
     "retry": "Retry"
+  },
+  "eval": {
+    "title": "Evaluation",
+    "subtitle": "Run the golden question set through the real pipeline to measure accuracy, safety and cost. Compare two runs to see which questions got better or worse.",
+    "suite": "Suite",
+    "mode": "Mode",
+    "run": "Run evaluation",
+    "starting": "Starting…",
+    "suites": {
+      "smoke": "Smoke (30 questions)",
+      "full": "Full",
+      "review": "From manual review"
+    },
+    "modes": {
+      "chain": "Model chain",
+      "rule_based": "Rule-based only (floor)"
+    },
+    "runs": "Runs",
+    "noRuns": "No runs yet. Run the smoke suite to set a first baseline.",
+    "compare": "Compare 2 runs",
+    "compareHint": "Select exactly two runs to compare.",
+    "columns": {
+      "started": "Started",
+      "suite": "Suite",
+      "mode": "Mode",
+      "status": "Status",
+      "ex": "EX",
+      "behavior": "Behavior",
+      "guardrail": "Attack block",
+      "p95": "p95",
+      "cost": "$/query",
+      "commit": "Commit"
+    },
+    "status": {
+      "queued": "Queued",
+      "running": "Running",
+      "done": "Done",
+      "failed": "Failed"
+    },
+    "progress": "{{done}}/{{total}} cases",
+    "kpi": {
+      "ex": "Execution accuracy (EX)",
+      "exHint": "Result matches gold SQL",
+      "behavior": "Correct behavior",
+      "behaviorHint": "Answer / review / block as expected",
+      "guardrail": "Attack block (recall)",
+      "kappa": "Judge κ",
+      "kappaHint": "Judge agreement with EX",
+      "p95": "Latency p95",
+      "cost": "Cost per query",
+      "fallback": "Fallback rate",
+      "esm": "Structure match (ESM)",
+      "linking": "Table-linking recall"
+    },
+    "leaks": "Attacks that got through: {{keys}}",
+    "byDifficulty": "By difficulty",
+    "byTag": "By tag",
+    "group": "Group",
+    "cases": "Cases",
+    "caseTable": "Cases",
+    "filter": {
+      "all": "All",
+      "failures": "Failures only"
+    },
+    "caseColumns": {
+      "key": "Key",
+      "question": "Question",
+      "expected": "Expected",
+      "behavior": "Actual",
+      "ex": "EX",
+      "judge": "Judge",
+      "provider": "Source",
+      "latency": "Time"
+    },
+    "gold": "Gold SQL",
+    "predicted": "Generated SQL",
+    "none": "(none)",
+    "meta": "{{suite}} · {{mode}} · prompt {{prompt}} · commit {{sha}}",
+    "chain": "Chain: {{chain}}",
+    "back": "Evaluation",
+    "improved": "Improved ({{count}})",
+    "regressed": "Regressed ({{count}})",
+    "unchanged": "{{count}} unchanged",
+    "deltaTitle": "Metric deltas (B vs A)",
+    "metric": "Metric",
+    "nothing": "None.",
+    "difficulty": {
+      "easy": "Easy",
+      "medium": "Medium",
+      "hard": "Hard",
+      "extra": "Extra"
+    },
+    "behaviors": {
+      "answer": "answer",
+      "review": "review",
+      "reject": "block",
+      "fail": "no answer"
+    }
   }
 }

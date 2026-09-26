@@ -2,7 +2,7 @@ import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Too
 import { formatCompact, formatNumber } from '@/lib/format'
 import type { ChartSpec, ResultSet } from './types'
 
-const SERIES = ['var(--accent)', 'var(--ok)', 'var(--warn)']
+const SERIES = ['var(--series-1)', 'var(--series-2)', 'var(--series-3)']
 const AXIS = { fontSize: 11, fill: 'var(--ink-3)', fontFamily: 'var(--font-mono)' }
 
 function records(result: ResultSet): Record<string, unknown>[] {

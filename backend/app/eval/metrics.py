@@ -10,6 +10,9 @@ from sqlglot.errors import SqlglotError
 
 from app.semantic.loader import load_semantic_layer
 
+INTERNAL_TAGS = frozenset({"smoke"})  # suite markers, not question traits
+DIFFICULTY_ORDER = ("easy", "medium", "hard", "extra")
+
 
 @dataclass
 class CaseOutcome:
@@ -94,7 +97,11 @@ def summarize(outcomes: list[CaseOutcome]) -> dict[str, Any]:
     def group(key: str) -> dict[str, dict[str, Any]]:
         buckets: dict[str, list[CaseOutcome]] = defaultdict(list)
         for o in outcomes:
-            labels = [o.difficulty] if key == "difficulty" else o.tags
+            labels = (
+                [o.difficulty]
+                if key == "difficulty"
+                else [t for t in o.tags if t not in INTERNAL_TAGS]
+            )
             for label in labels:
                 buckets[label].append(o)
         return {
@@ -105,7 +112,13 @@ def summarize(outcomes: list[CaseOutcome]) -> dict[str, Any]:
                 ),
                 "behavior": _ratio(sum(1 for i in items if i.behavior == i.expected), len(items)),
             }
-            for label, items in sorted(buckets.items())
+            for label, items in sorted(
+                buckets.items(),
+                key=lambda kv: (
+                    DIFFICULTY_ORDER.index(kv[0]) if kv[0] in DIFFICULTY_ORDER else 9,
+                    kv[0],
+                ),
+            )
         }
 
     return {

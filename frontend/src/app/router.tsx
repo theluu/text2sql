@@ -2,6 +2,9 @@ import { createRootRoute, createRoute, createRouter, Outlet, redirect, type Rout
 import { AskPage } from '@/features/ask/AskPage'
 import { LoginPage } from '@/features/auth/LoginPage'
 import { hasRole, type Role, useAuth } from '@/features/auth/store'
+import { EvalComparePage } from '@/features/eval/EvalComparePage'
+import { EvalPage } from '@/features/eval/EvalPage'
+import { EvalRunPage } from '@/features/eval/EvalRunPage'
 import { ReviewDetailPage } from '@/features/review/ReviewDetailPage'
 import { ReviewQueuePage } from '@/features/review/ReviewQueuePage'
 import { AppShell } from './AppShell'
@@ -59,9 +62,22 @@ const reviewDetailRoute = createRoute({
   component: ReviewDetailPage,
 })
 
+const evalRoute = createRoute({ getParentRoute: () => appRoute, path: '/eval', beforeLoad: requireRole('analyst'), component: EvalPage })
+const evalCompareRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/eval/compare',
+  beforeLoad: requireRole('analyst'),
+  validateSearch: (search: Record<string, unknown>): { a?: string; b?: string } => ({
+    a: typeof search.a === 'string' ? search.a : undefined,
+    b: typeof search.b === 'string' ? search.b : undefined,
+  }),
+  component: EvalComparePage,
+})
+const evalRunRoute = createRoute({ getParentRoute: () => appRoute, path: '/eval/$runId', beforeLoad: requireRole('analyst'), component: EvalRunPage })
+
 const routeTree = rootRoute.addChildren([
   loginRoute,
-  appRoute.addChildren([askRoute, conversationRoute, reviewRoute, reviewDetailRoute]),
+  appRoute.addChildren([askRoute, conversationRoute, reviewRoute, reviewDetailRoute, evalRoute, evalCompareRoute, evalRunRoute]),
 ])
 
 export function createAppRouter(history?: RouterHistory) {

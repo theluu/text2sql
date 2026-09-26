@@ -1,8 +1,8 @@
-import { type LucideIcon, MessageSquareText, ClipboardCheck } from 'lucide-react'
+import { ClipboardCheck, FlaskConical, type LucideIcon, MessageSquareText } from 'lucide-react'
 import type { Role } from '@/features/auth/store'
 
 export interface NavItem {
-  to: '/' | '/review'
+  to: '/' | '/review' | '/eval'
   labelKey: string
   icon: LucideIcon
   minRole: Role
@@ -12,4 +12,5 @@ export interface NavItem {
 export const NAV_ITEMS: NavItem[] = [
   { to: '/', labelKey: 'nav.ask', icon: MessageSquareText, minRole: 'viewer' },
   { to: '/review', labelKey: 'nav.review', icon: ClipboardCheck, minRole: 'analyst', badge: 'review' },
+  { to: '/eval', labelKey: 'nav.eval', icon: FlaskConical, minRole: 'analyst' },
 ]

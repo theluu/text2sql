@@ -215,5 +215,103 @@
   },
   "common": {
     "retry": "Thử lại"
+  },
+  "eval": {
+    "title": "Đánh giá chất lượng",
+    "subtitle": "Chạy bộ câu hỏi chuẩn (golden set) qua đúng pipeline thật để đo độ chính xác, an toàn và chi phí. So sánh hai lần chạy để thấy câu nào tốt lên hay kém đi.",
+    "suite": "Bộ câu hỏi",
+    "mode": "Chế độ",
+    "run": "Chạy đánh giá",
+    "starting": "Đang khởi chạy…",
+    "suites": {
+      "smoke": "Smoke (30 câu)",
+      "full": "Đầy đủ",
+      "review": "Từ duyệt thủ công"
+    },
+    "modes": {
+      "chain": "Chuỗi mô hình",
+      "rule_based": "Chỉ rule-based (mức sàn)"
+    },
+    "runs": "Các lần chạy",
+    "noRuns": "Chưa có lần chạy nào. Chạy bộ smoke để có mốc đầu tiên.",
+    "compare": "So sánh 2 lần chạy",
+    "compareHint": "Chọn đúng hai lần chạy để so sánh.",
+    "columns": {
+      "started": "Bắt đầu",
+      "suite": "Bộ",
+      "mode": "Chế độ",
+      "status": "Trạng thái",
+      "ex": "EX",
+      "behavior": "Hành vi",
+      "guardrail": "Chặn tấn công",
+      "p95": "p95",
+      "cost": "$/câu",
+      "commit": "Commit"
+    },
+    "status": {
+      "queued": "Đang chờ",
+      "running": "Đang chạy",
+      "done": "Xong",
+      "failed": "Lỗi"
+    },
+    "progress": "{{done}}/{{total}} câu",
+    "kpi": {
+      "ex": "Độ chính xác thực thi (EX)",
+      "exHint": "Kết quả khớp gold SQL",
+      "behavior": "Hành vi đúng",
+      "behaviorHint": "Trả lời / duyệt / chặn đúng kỳ vọng",
+      "guardrail": "Chặn tấn công (recall)",
+      "kappa": "Judge κ",
+      "kappaHint": "Đồng thuận judge với EX",
+      "p95": "Độ trễ p95",
+      "cost": "Chi phí mỗi câu",
+      "fallback": "Tỷ lệ dự phòng",
+      "esm": "Khớp cấu trúc (ESM)",
+      "linking": "Recall chọn bảng"
+    },
+    "leaks": "Câu tấn công bị lọt: {{keys}}",
+    "byDifficulty": "Theo độ khó",
+    "byTag": "Theo nhãn",
+    "group": "Nhóm",
+    "cases": "Số câu",
+    "caseTable": "Từng câu",
+    "filter": {
+      "all": "Tất cả",
+      "failures": "Chỉ câu sai"
+    },
+    "caseColumns": {
+      "key": "Mã",
+      "question": "Câu hỏi",
+      "expected": "Kỳ vọng",
+      "behavior": "Thực tế",
+      "ex": "EX",
+      "judge": "Judge",
+      "provider": "Nguồn",
+      "latency": "Thời gian"
+    },
+    "gold": "Gold SQL",
+    "predicted": "SQL sinh ra",
+    "none": "(không có)",
+    "meta": "{{suite}} · {{mode}} · prompt {{prompt}} · commit {{sha}}",
+    "chain": "Chuỗi: {{chain}}",
+    "back": "Đánh giá",
+    "improved": "Tốt lên ({{count}})",
+    "regressed": "Kém đi ({{count}})",
+    "unchanged": "{{count}} câu không đổi",
+    "deltaTitle": "Chênh lệch chỉ số (B so với A)",
+    "metric": "Chỉ số",
+    "nothing": "Không có câu nào.",
+    "difficulty": {
+      "easy": "Dễ",
+      "medium": "Trung bình",
+      "hard": "Khó",
+      "extra": "Rất khó"
+    },
+    "behaviors": {
+      "answer": "trả lời",
+      "review": "chờ duyệt",
+      "reject": "chặn",
+      "fail": "không trả lời"
+    }
   }
 }
