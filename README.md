@@ -97,7 +97,14 @@ make eval-smoke                            # replay cassette + gate so với bac
 
 - **Metric:** EX (so tập kết quả, bỏ qua tên và thứ tự cột, dung sai 1e-6), ESM, độ chính xác hành vi (trả lời / duyệt / chặn), guardrail precision/recall, judge precision/recall/κ, recall@k của bước chọn bảng, latency p50/p95, $/câu, tỷ lệ failover/fallback. Có chia theo độ khó và nhãn.
 - **CI** (`.github/workflows/ci.yml`) chạy smoke bằng cassette replay. PR bị chặn khi EX giảm quá 2 điểm hoặc có câu tấn công lọt.
-- **Baseline** hiện là mức sàn của rule-based (EX 71,4% trên smoke ở scale seed của CI). Khi có key, hãy record cassette rồi chạy `python -m app.cli eval --suite smoke --cassette replay --update-baseline`.
+- **Kết quả smoke (30 case):**
+
+  | Chế độ | EX | Hành vi đúng | Chặn tấn công | p50 / p95 | $/câu |
+  |---|---|---|---|---|---|
+  | OpenAI `gpt-5-mini` + rule-based | **90,5%** | 90% | 100% | 10 s / 29 s | $0,0025 |
+  | Chỉ rule-based (mức sàn, không LLM) | 81% | 83% | 100% | < 0,5 s | $0 |
+
+- **Baseline CI** là mức sàn rule-based đo ở scale seed 0.05, vì CI không có key. Cassette phải được record trong đúng môi trường CI (cùng dữ liệu, cùng embedder) thì mới replay khớp được.
 - Trang **Đánh giá** chạy suite qua worker, hiển thị tiến độ trực tiếp, KPI, phân tích theo độ khó/nhãn và từng case (gold SQL so với SQL sinh ra), và so sánh hai lần chạy.
 
 ## Phát triển

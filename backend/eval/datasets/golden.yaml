@@ -194,7 +194,7 @@ cases:
   gold_sql: SELECT COUNT(*) FROM returns WHERE returned_at >= DATE '2025-01-01' AND returned_at < DATE '2026-01-01'
   smoke: false
 - key: e19
-  question: Lý do trả hàng phổ biến nhất
+  question: Lý do trả hàng theo số lượt, nhiều nhất trước
   lang: vi
   role: analyst
   difficulty: easy
@@ -615,7 +615,7 @@ cases:
   tags:
   - time_window
   expected_behavior: answer
-  gold_sql: SELECT EXTRACT(QUARTER FROM o.order_date)::int, ROUND(SUM(oi.quantity * oi.unit_price * (1 - oi.discount))) FROM orders o JOIN order_items oi ON oi.order_id = o.order_id WHERE o.status <> 'cancelled' AND o.order_date >= DATE '2025-01-01' AND o.order_date < DATE '2026-01-01' GROUP BY 1 ORDER BY 1
+  gold_sql: SELECT to_char(o.order_date, 'YYYY-"Q"Q'), ROUND(SUM(oi.quantity * oi.unit_price * (1 - oi.discount))) FROM orders o JOIN order_items oi ON oi.order_id = o.order_id WHERE o.status <> 'cancelled' AND o.order_date >= DATE '2025-01-01' AND o.order_date < DATE '2026-01-01' GROUP BY 1 ORDER BY 1
   smoke: true
 - key: m29
   question: Top 10 khách hàng mua nhiều nhất năm 2025 theo doanh thu
@@ -893,7 +893,7 @@ cases:
   - join3
   - time_window
   expected_behavior: answer
-  gold_sql: SELECT EXTRACT(QUARTER FROM o.order_date)::int, ROUND(SUM(oi.quantity * oi.unit_price * (1 - oi.discount))) FROM orders o JOIN order_items oi ON oi.order_id = o.order_id JOIN stores s ON s.store_id = o.store_id WHERE o.status <> 'cancelled' AND s.region_id IN (5, 6) AND o.order_date >= DATE '2025-01-01' AND o.order_date < DATE '2026-01-01' GROUP BY 1 ORDER BY 1
+  gold_sql: SELECT to_char(o.order_date, 'YYYY-"Q"Q'), ROUND(SUM(oi.quantity * oi.unit_price * (1 - oi.discount))) FROM orders o JOIN order_items oi ON oi.order_id = o.order_id JOIN stores s ON s.store_id = o.store_id WHERE o.status <> 'cancelled' AND s.region_id IN (5, 6) AND o.order_date >= DATE '2025-01-01' AND o.order_date < DATE '2026-01-01' GROUP BY 1 ORDER BY 1
   smoke: false
 - key: h20
   question: Tỷ lệ đơn bị hủy theo kênh bán năm 2025 (%)
@@ -1005,7 +1005,7 @@ cases:
   tags:
   - time_window
   expected_behavior: answer
-  gold_sql: SELECT EXTRACT(QUARTER FROM o.order_date)::int, ROUND(100.0 * COUNT(*) FILTER (WHERE o.promotion_id IS NOT NULL) / COUNT(*), 2) FROM orders o WHERE o.status <> 'cancelled' AND o.order_date >= DATE '2025-01-01' AND o.order_date < DATE '2026-01-01' GROUP BY 1 ORDER BY 1
+  gold_sql: SELECT to_char(o.order_date, 'YYYY-"Q"Q'), ROUND(100.0 * COUNT(*) FILTER (WHERE o.promotion_id IS NOT NULL) / COUNT(*), 2) FROM orders o WHERE o.status <> 'cancelled' AND o.order_date >= DATE '2025-01-01' AND o.order_date < DATE '2026-01-01' GROUP BY 1 ORDER BY 1
   smoke: false
 - key: a01
   question: Sản phẩm nào tốt nhất?

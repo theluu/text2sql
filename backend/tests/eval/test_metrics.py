@@ -20,6 +20,10 @@ from app.llm.fake import FakeLLMProvider
         ([["a", 1]], [[1, "a"]], False, True),  # column order and names do not matter
         ([[1.0000001]], [[1.0000002]], False, True),  # 1e-6 relative tolerance
         ([[1.0]], [[1.01]], False, False),
+        ([["Online", 90]], [[1, "Online", 90]], False, True),  # extra id column
+        ([["a", 5]], [["a", 5, 12.5]], False, True),  # extra share column
+        ([["a", 5]], [["a", 6, 5]], False, True),  # a matching column subset exists
+        ([["a", 5]], [["b", 5, 1]], False, False),
         ([[100]], [["100"]], False, True),
         ([[None]], [[None]], False, True),
         ([["a", 1]], [["a", 1], ["a", 1]], False, False),

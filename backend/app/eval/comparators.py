@@ -1,12 +1,14 @@
 """Result-set comparison for Execution Accuracy (EX) and self-consistency.
 
 Rows are compared as a multiset (as a list when order matters). Column names and column
-order do not matter; numbers match within 1e-6 relative tolerance.
+order do not matter, extra predicted columns are tolerated, numbers match within 1e-6
+relative tolerance.
 """
 
 import math
 from collections import Counter
 from collections.abc import Sequence
+from itertools import combinations
 from typing import Any
 
 import sqlglot
@@ -37,16 +39,36 @@ def _row(row: Sequence[Any]) -> tuple[str, ...]:
     return tuple(sorted(_value(v) for v in row))
 
 
+MAX_COLUMN_SUBSETS = 500
+
+
+def _same(
+    gold_rows: list[tuple[str, ...]], pred_rows: list[tuple[str, ...]], ordered: bool
+) -> bool:
+    return gold_rows == pred_rows if ordered else Counter(gold_rows) == Counter(pred_rows)
+
+
 def results_match(
     gold: Sequence[Sequence[Any]], predicted: Sequence[Sequence[Any]], *, ordered: bool = False
 ) -> bool:
+    """Gold rows must equal predicted rows; the prediction may carry extra columns (an id, a
+    share %) as long as some subset of its columns reproduces the gold result exactly."""
     if len(gold) != len(predicted):
         return False
     gold_rows = [_row(r) for r in gold]
-    pred_rows = [_row(r) for r in predicted]
-    if ordered:
-        return gold_rows == pred_rows
-    return Counter(gold_rows) == Counter(pred_rows)
+    if _same(gold_rows, [_row(r) for r in predicted], ordered):
+        return True
+    width = len(gold[0]) if gold else 0
+    pred_width = len(predicted[0]) if predicted else 0
+    if not gold or pred_width <= width:
+        return False
+    for count, columns in enumerate(combinations(range(pred_width), width)):
+        if count >= MAX_COLUMN_SUBSETS:
+            return False
+        projected = [_row([row[i] for i in columns]) for row in predicted]
+        if _same(gold_rows, projected, ordered):
+            return True
+    return False
 
 
 def has_order_by(sql: str) -> bool:
