@@ -46,7 +46,7 @@ jobs:
     needs: [api, web]
     steps:
       - uses: actions/checkout@v4
-      - run: cp .env.example .env && sed -i "s/^WAREHOUSE_SEED_SCALE=.*/WAREHOUSE_SEED_SCALE=0.05/" .env
+      - run: make env && sed -i "s/^WAREHOUSE_SEED_SCALE=.*/WAREHOUSE_SEED_SCALE=0.05/" .env
       - run: docker compose up -d --build
       - run: timeout 300 sh -c 'until curl -fsS localhost:8080/api/health; do sleep 3; done'
       - run: |

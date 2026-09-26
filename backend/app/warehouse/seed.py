@@ -251,6 +251,7 @@ def seed(conn: psycopg.Connection[Any], scale: float = 1.0, seed_value: int = 42
         rng.choices(days, weights=[_day_weight(d) for d in days], k=_scaled("orders", scale))
     )
     pending_from = PERIOD_END - timedelta(days=4)
+    period_close = datetime.combine(PERIOD_END, time(23, 59), ICT)
 
     orders: list[tuple[Any, ...]] = []
     items: list[tuple[Any, ...]] = []
@@ -288,11 +289,11 @@ def seed(conn: psycopg.Connection[Any], scale: float = 1.0, seed_value: int = 42
             elif not is_online and method == "cod":
                 method = "cash"
             payments.append((len(payments) + 1, order_id, method, total,
-                             placed + timedelta(minutes=rng.randint(0, 90))))  # fmt: skip
+                             min(placed + timedelta(minutes=rng.randint(0, 90)), period_close)))  # fmt: skip
         if status == "returned":
             first = next(iter(picked.values()))
             returns.append((len(returns) + 1, order_id, first[0], 1, rng.choice(RETURN_REASONS),
-                            placed + timedelta(days=rng.randint(2, 20))))  # fmt: skip
+                            min(placed + timedelta(days=rng.randint(2, 20)), period_close)))  # fmt: skip
 
     _copy(conn, "orders",
           ("order_id", "customer_id", "store_id", "employee_id", "promotion_id", "order_date",

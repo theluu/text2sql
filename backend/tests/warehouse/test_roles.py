@@ -62,6 +62,14 @@ def test_analyst_can_read_raw_customers(pg_settings: Settings, pii_row: int) -> 
     assert row == ("pham.test@example.vn",)
 
 
+def connect_read_write(settings: Settings, role: str) -> psycopg.Connection:
+    """Session with the read-only default switched off, so only privileges can deny."""
+    conn = connect(settings, role)
+    conn.autocommit = True
+    conn.execute("SET default_transaction_read_only = off")
+    return conn
+
+
 @pytest.mark.usefixtures("warehouse_schema")
 @pytest.mark.parametrize("role", ["viewer", "analyst"])
 @pytest.mark.parametrize(
@@ -72,10 +80,35 @@ def test_analyst_can_read_raw_customers(pg_settings: Settings, pii_row: int) -> 
         "DELETE FROM orders",
         "CREATE TABLE hack (i int)",
         "DROP TABLE regions",
+        "CREATE TEMP TABLE hack (i int)",
     ],
 )
-def test_warehouse_roles_cannot_write(pg_settings: Settings, role: str, statement: str) -> None:
-    with connect(pg_settings, role) as conn, pytest.raises(DENIED):
+def test_warehouse_roles_cannot_write_even_without_read_only_default(
+    pg_settings: Settings, role: str, statement: str
+) -> None:
+    with (
+        connect_read_write(pg_settings, role) as conn,
+        pytest.raises(psycopg.errors.InsufficientPrivilege),
+    ):
+        conn.execute(statement)
+
+
+@pytest.mark.usefixtures("warehouse_schema")
+@pytest.mark.parametrize("role", ["viewer", "analyst"])
+@pytest.mark.parametrize(
+    "statement",
+    [
+        "SELECT set_config('statement_timeout', '0', false)",
+        "SELECT set_config('default_transaction_read_only', 'off', false)",
+        "SELECT pg_sleep(0)",
+        "SELECT pg_sleep_for('0 seconds')",
+        "SELECT pg_sleep_until(now())",
+    ],
+)
+def test_warehouse_roles_cannot_call_session_or_sleep_functions(
+    pg_settings: Settings, role: str, statement: str
+) -> None:
+    with connect(pg_settings, role) as conn, pytest.raises(psycopg.errors.InsufficientPrivilege):
         conn.execute(statement)
 
 

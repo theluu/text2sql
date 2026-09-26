@@ -77,3 +77,12 @@ def test_bootstrap_twice_does_not_duplicate_rows(
 ) -> None:
     again = bootstrap_warehouse(pg_settings, scale=pg_settings.warehouse_seed_scale)
     assert again == seeded_warehouse
+
+
+def test_every_event_timestamp_stays_inside_business_period(wh_admin: psycopg.Connection) -> None:
+    for table, column in (("orders", "order_date"), ("payments", "paid_at"),
+                          ("returns", "returned_at")):  # fmt: skip
+        (latest,) = wh_admin.execute(
+            f"SELECT max(({column} AT TIME ZONE 'Asia/Ho_Chi_Minh')::date) FROM {table}"
+        ).fetchone()
+        assert latest <= PERIOD_END, (table, latest)

@@ -9,3 +9,13 @@ GRANT SELECT ON regions, stores, categories, products, inventory, promotions,
 GRANT SELECT ON v_customers_masked, v_employees_masked TO wh_viewer;
 
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO wh_analyst;
+
+-- Defense in depth: roles can SET session options, so shut the side doors a
+-- single SELECT could use (set_config, sleeps) and forbid temp-table writes.
+DO $$ BEGIN
+    EXECUTE format('REVOKE TEMPORARY ON DATABASE %I FROM PUBLIC', current_database());
+END $$;
+REVOKE EXECUTE ON FUNCTION pg_catalog.set_config(text, text, boolean) FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION pg_catalog.pg_sleep(double precision) FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION pg_catalog.pg_sleep_for(interval) FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION pg_catalog.pg_sleep_until(timestamp with time zone) FROM PUBLIC;

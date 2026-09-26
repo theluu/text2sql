@@ -17,3 +17,13 @@ def test_warehouse_dsn_uses_role_credentials_and_escapes_password() -> None:
 
 def test_warehouse_dsn_defaults_to_admin() -> None:
     assert make_settings().warehouse_dsn().startswith("postgresql://wh_admin:admin-pw@")
+
+
+def test_env_example_jwt_secret_is_not_usable_as_is() -> None:
+    """Copying .env.example verbatim must not yield a publicly known signing key."""
+    from pathlib import Path
+
+    example = Path(__file__).resolve().parents[3] / ".env.example"
+    values = dict(line.split("=", 1) for line in example.read_text().splitlines() if "=" in line)
+    with pytest.raises(ValidationError):
+        make_settings(jwt_secret=values["JWT_SECRET"])
