@@ -110,3 +110,18 @@ def test_kpi_line_bar_table() -> None:
     assert "Đông Nam Bộ (9)" in summarize(bar, "vi")
     wide = _result(["a", "b"], ["text", "text"], [["x", "y"]])
     assert chart_spec(wide) == {"type": "table"}
+
+
+def test_long_format_gets_one_series_per_category() -> None:
+    rows = [
+        ["2025-01", "offline", 17],
+        ["2025-01", "online", 10],
+        ["2025-02", "offline", 15],
+        ["2025-02", "online", 9],
+    ]
+    spec = chart_spec(_result(["month", "channel", "revenue"], ["text", "text", "number"], rows))
+    assert spec == {"type": "line", "x": "month", "y": ["revenue"], "series": "channel"}
+    many = [[f"2025-0{i}", f"store {i}", i] for i in range(1, 8)]
+    assert "series" not in chart_spec(
+        _result(["month", "store", "revenue"], ["text", "text", "number"], many)
+    )

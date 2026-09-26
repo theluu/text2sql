@@ -13,8 +13,8 @@ export type ChartSpec =
   | { type: 'empty' }
   | { type: 'table' }
   | { type: 'kpi'; value: string }
-  | { type: 'line'; x: string; y: string[] }
-  | { type: 'bar'; x: string; y: string[]; horizontal?: boolean }
+  | { type: 'line'; x: string; y: string[]; series?: string }
+  | { type: 'bar'; x: string; y: string[]; horizontal?: boolean; series?: string }
 
 export interface TraceStep {
   step: string

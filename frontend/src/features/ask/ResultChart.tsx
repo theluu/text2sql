@@ -1,4 +1,4 @@
-import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { formatCompact, formatNumber } from '@/lib/format'
 import type { ChartSpec, ResultSet } from './types'
 
@@ -8,6 +8,25 @@ const AXIS = { fontSize: 11, fill: 'var(--ink-3)', fontFamily: 'var(--font-mono)
 function records(result: ResultSet): Record<string, unknown>[] {
   return result.rows.map((row) => Object.fromEntries(result.columns.map((c, i) => [c, row[i]])))
 }
+
+/** Long → wide: one row per x, one key per series value (e.g. month × {online, offline}). */
+export function pivot(result: ResultSet, x: string, series: string, y: string): { data: Record<string, unknown>[]; keys: string[] } {
+  const xi = result.columns.indexOf(x)
+  const si = result.columns.indexOf(series)
+  const yi = result.columns.indexOf(y)
+  const keys: string[] = []
+  const byX = new Map<unknown, Record<string, unknown>>()
+  for (const row of result.rows) {
+    const key = String(row[si])
+    if (!keys.includes(key)) keys.push(key)
+    const entry = byX.get(row[xi]) ?? { [x]: row[xi] }
+    entry[key] = row[yi]
+    byX.set(row[xi], entry)
+  }
+  return { data: [...byX.values()], keys }
+}
+
+const legendText = (value: string) => <span style={{ color: 'var(--ink-2)' }}>{value}</span>
 
 const tooltip = {
   contentStyle: {
@@ -30,7 +49,9 @@ export function ResultChart({ spec, result }: { spec: ChartSpec; result: ResultS
     )
   }
   if (spec.type !== 'line' && spec.type !== 'bar') return null
-  const data = records(result)
+  const wide = spec.series ? pivot(result, spec.x, spec.series, spec.y[0]) : null
+  const data = wide ? wide.data : records(result)
+  const keys = wide ? wide.keys : spec.y
   if (spec.type === 'line') {
     return (
       <div className="h-64" role="img" aria-label={`${spec.y.join(', ')} / ${spec.x}`}>
@@ -40,8 +61,9 @@ export function ResultChart({ spec, result }: { spec: ChartSpec; result: ResultS
             <XAxis dataKey={spec.x} tick={AXIS} tickLine={false} axisLine={{ stroke: 'var(--rule)' }} />
             <YAxis tick={AXIS} tickLine={false} axisLine={false} tickFormatter={formatCompact} width={56} />
             <Tooltip {...tooltip} />
-            {spec.y.map((key, i) => (
-              <Line key={key} dataKey={key} stroke={SERIES[i]} strokeWidth={2} dot={data.length < 24} isAnimationActive={false} />
+            {keys.length > 1 && <Legend formatter={legendText} itemSorter={null} iconType="square" iconSize={10} wrapperStyle={{ fontSize: 12 }} />}
+            {keys.map((key, i) => (
+              <Line key={key} dataKey={key} name={key} stroke={SERIES[i]} strokeWidth={2} dot={data.length < 24 ? { r: 3, fill: SERIES[i], stroke: 'var(--surface)', strokeWidth: 1.5 } : false} isAnimationActive={false} />
             ))}
           </LineChart>
         </ResponsiveContainer>
@@ -67,8 +89,9 @@ export function ResultChart({ spec, result }: { spec: ChartSpec; result: ResultS
             </>
           )}
           <Tooltip {...tooltip} cursor={{ fill: 'var(--surface-2)' }} />
-          {spec.y.map((key, i) => (
-            <Bar key={key} dataKey={key} fill={SERIES[i]} radius={[1, 1, 0, 0]} isAnimationActive={false} />
+          {keys.length > 1 && <Legend formatter={legendText} itemSorter={null} iconType="square" iconSize={10} wrapperStyle={{ fontSize: 12 }} />}
+          {keys.map((key, i) => (
+            <Bar key={key} dataKey={key} name={key} fill={SERIES[i]} stroke="var(--surface)" strokeWidth={keys.length > 1 ? 2 : 0} radius={[1, 1, 0, 0]} isAnimationActive={false} />
           ))}
         </BarChart>
       </ResponsiveContainer>

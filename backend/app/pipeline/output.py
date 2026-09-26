@@ -78,16 +78,34 @@ def chart_spec(result: QueryResult) -> dict[str, Any]:
     numeric = _numeric_columns(result)
     if result.row_count == 1 and len(result.columns) == 1 and numeric:
         return {"type": "kpi", "value": result.columns[0]}
-    label = next((i for i in range(len(result.columns)) if i not in numeric), None)
-    if label is None or not numeric:
+    labels = [i for i in range(len(result.columns)) if i not in numeric]
+    if not labels or not numeric:
         return {"type": "table"}
+    time_labels = [i for i in labels if _is_time(result, i)]
+    label = time_labels[0] if time_labels else labels[0]
     x, y = result.columns[label], [result.columns[i] for i in numeric][:3]
-    if _is_time(result, label) and result.row_count >= 2:
+    series = _series_column(result, [i for i in labels if i != label])
+    if series is not None:
+        # Long format (month, channel, revenue): one series per channel, not one zig-zag line.
+        chart_type = "line" if label in time_labels else "bar"
+        return {"type": chart_type, "x": x, "y": y[:1], "series": result.columns[series]}
+    if label in time_labels and result.row_count >= 2:
         return {"type": "line", "x": x, "y": y}
     if result.row_count <= 30:
         longest = max(len(str(r[label])) for r in result.rows)
         return {"type": "bar", "x": x, "y": y[:2], "horizontal": longest > 14}
     return {"type": "table"}
+
+
+MAX_SERIES = 3  # the validated chart palette has three categorical slots
+
+
+def _series_column(result: QueryResult, candidates: list[int]) -> int | None:
+    for index in candidates:
+        distinct = {row[index] for row in result.rows}
+        if 2 <= len(distinct) <= MAX_SERIES:
+            return index
+    return None
 
 
 def summarize(result: QueryResult, lang: str) -> str:
