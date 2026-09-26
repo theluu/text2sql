@@ -6,6 +6,7 @@ export interface NavItem {
   labelKey: string
   icon: LucideIcon
   minRole: Role
+  exact?: boolean
 }
 
 export const NAV_ITEMS: NavItem[] = [{ to: '/', labelKey: 'nav.ask', icon: MessageSquareText, minRole: 'viewer' }]

@@ -1,21 +1,16 @@
-import { createMemoryHistory, RouterProvider } from '@tanstack/react-router'
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { createAppRouter } from '@/app/router'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { useAuth } from '@/features/auth/store'
 import vi_ from '@/i18n/locales/vi.json'
+import { json, mockApi, renderApp } from '../utils'
 
 const USER = { id: 'u1', email: 'viewer@demo.vn', name: 'Nguyễn Minh Anh', role: 'viewer' as const }
 
-function renderAt(path: string) {
-  const router = createAppRouter(createMemoryHistory({ initialEntries: [path] }))
-  render(<RouterProvider router={router} />)
-  return router
-}
+const renderAt = renderApp
 
 function stubLogin(status: number, body: unknown) {
-  vi.stubGlobal('fetch', vi.fn(async () => new Response(JSON.stringify(body), { status })))
+  mockApi({ 'POST /api/auth/login': () => json(body, status) })
 }
 
 describe('routing & login', () => {
@@ -70,6 +65,7 @@ describe('routing & login', () => {
 
   it('shows the signed-in user and signs out back to login', async () => {
     useAuth.setState({ token: 'tok', user: USER })
+    mockApi({})
     const router = renderAt('/')
     expect(await screen.findByText(USER.name)).toBeInTheDocument()
     expect(screen.getByRole('link', { name: vi_.nav.ask })).toBeInTheDocument()

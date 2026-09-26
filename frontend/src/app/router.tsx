@@ -35,8 +35,9 @@ const appRoute = createRoute({
 })
 
 const askRoute = createRoute({ getParentRoute: () => appRoute, path: '/', component: AskPage })
+const conversationRoute = createRoute({ getParentRoute: () => appRoute, path: '/c/$conversationId', component: AskPage })
 
-const routeTree = rootRoute.addChildren([loginRoute, appRoute.addChildren([askRoute])])
+const routeTree = rootRoute.addChildren([loginRoute, appRoute.addChildren([askRoute, conversationRoute])])
 
 export function createAppRouter(history?: RouterHistory) {
   return createRouter({ routeTree, history, defaultPreload: 'intent' })

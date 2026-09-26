@@ -44,6 +44,98 @@
       "Top 10 sản phẩm bán chạy nhất tháng trước",
       "Những cửa hàng nào có tồn kho dưới mức đặt lại?",
       "Tỷ lệ hoàn hàng theo danh mục năm 2025"
-    ]
+    ],
+    "newChat": "Cuộc hỏi mới",
+    "history": "Lịch sử",
+    "noHistory": "Chưa có câu hỏi nào. Câu hỏi bạn đặt sẽ xuất hiện ở đây.",
+    "placeholder": "Hỏi về doanh thu, đơn hàng, tồn kho… (Enter để gửi, Shift+Enter xuống dòng)",
+    "send": "Gửi câu hỏi",
+    "stop": "Dừng",
+    "thinking": "Đang xử lý",
+    "rewritten": "Hiểu là: {{question}}",
+    "showTrace": "Xem các bước",
+    "sql": "Câu SQL",
+    "copy": "Sao chép",
+    "copied": "Đã chép",
+    "exportCsv": "Tải CSV",
+    "showAllRows": "Hiện tất cả {{count}} dòng",
+    "showFewerRows": "Thu gọn",
+    "truncated": "Kết quả bị giới hạn ở {{count}} dòng.",
+    "rowsCount": "{{count}} dòng",
+    "draft": "Bản nháp — chưa được xác nhận",
+    "noData": "Không có dữ liệu phù hợp.",
+    "reasons": "Lý do cần duyệt",
+    "suggestionsTitle": "Thử hỏi:",
+    "reviewNote": "Ghi chú của chuyên viên: {{note}}",
+    "editedByReviewer": "SQL đã được chuyên viên chỉnh sửa",
+    "streamError": "Mất kết nối khi đang trả lời. Kết quả vẫn được lưu — tải lại cuộc hỏi để xem.",
+    "loadError": "Không tải được cuộc hỏi này.",
+    "badges": {
+      "confidence": "Tin cậy {{value}}",
+      "fallback": "Chế độ dự phòng",
+      "cache": "Từ bộ nhớ đệm",
+      "verified": "SQL đã được duyệt",
+      "provider": "Mô hình: {{value}}"
+    },
+    "status": {
+      "answered": "Đã trả lời",
+      "pending_review": "Chờ duyệt",
+      "rejected": "Bị chặn",
+      "failed": "Không trả lời được",
+      "running": "Đang chạy"
+    },
+    "feedback": {
+      "up": "Kết quả đúng",
+      "down": "Kết quả chưa đúng",
+      "thanks": "Cảm ơn phản hồi của bạn",
+      "downSent": "Đã gửi cho chuyên viên xem lại"
+    }
+  },
+  "trace": {
+    "title": "Các bước xử lý",
+    "empty": "Chọn một câu trả lời để xem các bước.",
+    "close": "Đóng",
+    "total": "Tổng thời gian",
+    "cost": "Chi phí LLM",
+    "tokens": "Lượt gọi LLM",
+    "steps": {
+      "input_guard": "Kiểm tra đầu vào",
+      "rewrite": "Viết lại câu hỏi",
+      "cache": "Bộ nhớ đệm",
+      "link": "Chọn bảng",
+      "fewshot": "Ví dụ đã duyệt",
+      "generate": "Sinh SQL",
+      "validate": "Kiểm tra SQL",
+      "cost": "Ước lượng chi phí",
+      "execute": "Chạy truy vấn",
+      "repair": "Sửa lỗi",
+      "judge": "AI kiểm định",
+      "consistency": "Đối chiếu phương án",
+      "risk": "Cổng rủi ro",
+      "output": "Chuẩn bị kết quả",
+      "pipeline": "Pipeline"
+    },
+    "skipped": "bỏ qua",
+    "rubric": {
+      "intent": "Đúng ý hỏi",
+      "schema_selection": "Chọn bảng/cột",
+      "joins_filters": "Join & bộ lọc",
+      "aggregation": "Tổng hợp",
+      "result_sanity": "Kết quả hợp lý"
+    },
+    "verdict": {
+      "pass": "Đạt",
+      "fail": "Không đạt",
+      "uncertain": "Chưa chắc"
+    },
+    "decision": {
+      "AUTO_EXECUTE": "Tự chạy",
+      "NEEDS_REVIEW": "Cần duyệt",
+      "REJECT": "Chặn"
+    },
+    "sameVendor": "cùng nhà cung cấp với mô hình sinh SQL",
+    "agreement": "Đồng thuận {{value}}",
+    "similarity": "giống {{value}}",
+    "failover": "Đã chuyển sang mô hình dự phòng"
   }
 }

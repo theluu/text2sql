@@ -24,7 +24,7 @@ export function AppShell() {
             <Link
               key={item.to}
               to={item.to}
-              activeOptions={{ exact: true }}
+              activeOptions={{ exact: item.exact ?? false }}
               className="flex items-center gap-2.5 rounded-[4px] px-2.5 py-2 text-sm text-ink-2 hover:bg-surface-2 hover:text-ink"
               activeProps={{ className: 'bg-surface-2 text-ink font-medium' }}
             >

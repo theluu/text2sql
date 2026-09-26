@@ -44,6 +44,98 @@
       "Top 10 best-selling products last month",
       "Which stores have stock below reorder level?",
       "Return rate by category in 2025"
-    ]
+    ],
+    "newChat": "New question",
+    "history": "History",
+    "noHistory": "No questions yet. The questions you ask will show up here.",
+    "placeholder": "Ask about revenue, orders, inventory… (Enter to send, Shift+Enter for a new line)",
+    "send": "Send question",
+    "stop": "Stop",
+    "thinking": "Working",
+    "rewritten": "Understood as: {{question}}",
+    "showTrace": "Show steps",
+    "sql": "SQL",
+    "copy": "Copy",
+    "copied": "Copied",
+    "exportCsv": "Download CSV",
+    "showAllRows": "Show all {{count}} rows",
+    "showFewerRows": "Show fewer",
+    "truncated": "Result capped at {{count}} rows.",
+    "rowsCount": "{{count}} rows",
+    "draft": "Draft — not confirmed yet",
+    "noData": "No matching data.",
+    "reasons": "Why it needs review",
+    "suggestionsTitle": "Try asking:",
+    "reviewNote": "Analyst note: {{note}}",
+    "editedByReviewer": "SQL was edited by an analyst",
+    "streamError": "The connection dropped while answering. The result is still saved — reload the conversation to see it.",
+    "loadError": "Could not load this conversation.",
+    "badges": {
+      "confidence": "Confidence {{value}}",
+      "fallback": "Fallback mode",
+      "cache": "From cache",
+      "verified": "Verified SQL",
+      "provider": "Model: {{value}}"
+    },
+    "status": {
+      "answered": "Answered",
+      "pending_review": "Awaiting review",
+      "rejected": "Blocked",
+      "failed": "Not answered",
+      "running": "Running"
+    },
+    "feedback": {
+      "up": "Result is correct",
+      "down": "Result is wrong",
+      "thanks": "Thanks for the feedback",
+      "downSent": "Sent to an analyst for another look"
+    }
+  },
+  "trace": {
+    "title": "Pipeline steps",
+    "empty": "Select an answer to see its steps.",
+    "close": "Close",
+    "total": "Total time",
+    "cost": "LLM cost",
+    "tokens": "LLM calls",
+    "steps": {
+      "input_guard": "Input check",
+      "rewrite": "Rewrite question",
+      "cache": "Cache",
+      "link": "Pick tables",
+      "fewshot": "Verified examples",
+      "generate": "Generate SQL",
+      "validate": "Validate SQL",
+      "cost": "Estimate cost",
+      "execute": "Run query",
+      "repair": "Repair",
+      "judge": "AI judge",
+      "consistency": "Cross-check",
+      "risk": "Risk gate",
+      "output": "Prepare result",
+      "pipeline": "Pipeline"
+    },
+    "skipped": "skipped",
+    "rubric": {
+      "intent": "Matches intent",
+      "schema_selection": "Tables & columns",
+      "joins_filters": "Joins & filters",
+      "aggregation": "Aggregation",
+      "result_sanity": "Plausible result"
+    },
+    "verdict": {
+      "pass": "Pass",
+      "fail": "Fail",
+      "uncertain": "Uncertain"
+    },
+    "decision": {
+      "AUTO_EXECUTE": "Auto-run",
+      "NEEDS_REVIEW": "Needs review",
+      "REJECT": "Blocked"
+    },
+    "sameVendor": "same vendor as the SQL generator",
+    "agreement": "Agreement {{value}}",
+    "similarity": "{{value}} similar",
+    "failover": "Failed over to a backup model"
   }
 }

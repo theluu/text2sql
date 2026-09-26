@@ -38,6 +38,12 @@ def mask_result(result: QueryResult, role: str) -> list[str]:
     return masked
 
 
+def humanize(column: str) -> str:
+    """ty_le_hoan_pct -> "ty le hoan (%)" — readable without a label dictionary."""
+    text = column.replace("_", " ").strip()
+    return re.sub(r" pct$", " (%)", text)
+
+
 def fmt_number(value: float | int, lang: str) -> str:
     text = (
         f"{value:,.2f}"
@@ -98,9 +104,9 @@ def summarize(result: QueryResult, lang: str) -> str:
                     if vi
                     else "No data matches the question."
                 )
-            return f"{result.columns[0]}: {_fmt(row[0], lang)}"
+            return f"{humanize(result.columns[0])}: {_fmt(row[0], lang)}"
         return "; ".join(
-            f"{c}: {_fmt(v, lang)}" for c, v in list(zip(result.columns, row, strict=True))[:5]
+            f"{humanize(c)}: {_fmt(v, lang)}" for c, v in list(zip(result.columns, row, strict=True))[:5]
         )
     rows_text = (f"{result.row_count} dòng" if vi else f"{result.row_count} rows") + (
         (" (đã giới hạn)" if vi else " (truncated)") if result.truncated else ""
@@ -112,7 +118,7 @@ def summarize(result: QueryResult, lang: str) -> str:
     values = [(r[label], r[metric]) for r in result.rows if isinstance(r[metric], int | float)]
     if not values:
         return rows_text + "."
-    name = result.columns[metric]
+    name = humanize(result.columns[metric])
     if _is_time(result, label):
         (first_label, first), (last_label, last) = values[0], values[-1]
         change = f" ({(last - first) / first * 100:+.1f}%)" if first else ""

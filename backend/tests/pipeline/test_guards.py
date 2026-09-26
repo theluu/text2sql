@@ -98,6 +98,7 @@ def test_kpi_line_bar_table() -> None:
     kpi = _result(["revenue"], ["number"], [[123]])
     assert chart_spec(kpi) == {"type": "kpi", "value": "revenue"}
     assert summarize(kpi, "en") == "revenue: 123"
+    assert summarize(_result(["ty_le_pct"], ["number"], [[4.5]]), "vi") == "ty le (%): 4,50"
     line = _result(["thang", "doanh_thu"], ["text", "number"], [["2026-01", 100], ["2026-02", 150]])
     assert chart_spec(line) == {"type": "line", "x": "thang", "y": ["doanh_thu"]}
     assert "+50.0%" in summarize(line, "vi")

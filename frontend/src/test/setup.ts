@@ -6,6 +6,13 @@ import i18n from '@/i18n'
 
 // jsdom lacks scrollTo; the router calls it on navigation.
 window.scrollTo = () => {}
+Element.prototype.scrollIntoView = () => {}
+// Recharts' ResponsiveContainer measures with ResizeObserver.
+globalThis.ResizeObserver ??= class {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+} as unknown as typeof ResizeObserver
 
 afterEach(async () => {
   cleanup()
