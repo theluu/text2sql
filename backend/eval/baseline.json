@@ -1,0 +1,9 @@
+{
+  "suite": "smoke",
+  "mode": "chain",
+  "note": "Measured in CI conditions: cassette replay with no recorded cassette (so the floor is the rule-based fallback) at WAREHOUSE_SEED_SCALE=0.05. Re-record with `make eval-record` and update with --update-baseline when API keys are available.",
+  "ex": 0.7143,
+  "behavior_accuracy": 0.8333,
+  "guardrail_recall": 1.0,
+  "cases": 30
+}

@@ -127,6 +127,10 @@ def parse_time(text: str, as_of: date) -> TimeRange | None:
         start = today - timedelta(today.weekday() + 7)
         return TimeRange(start, start + timedelta(7), "tuần trước", "last week", "week")
 
+    match = re.search(r" (?:ngay )?([0-3]?\d) (1[0-2]|0?[1-9]) (20\d\d) ", t)
+    if match:  # "ngày 11/11/2025", "12/12/2025"
+        day = date(int(match.group(3)), int(match.group(2)), int(match.group(1)))
+        return TimeRange(day, day + timedelta(1), f"ngày {day:%d/%m/%Y}", f"{day:%d %b %Y}", "day")
     match = re.search(r" (?:quy|q|quarter) ([1-4]) ", t) or re.search(r" q([1-4]) ", t)
     if match:
         found = quarter_range(_year_after(t, today.year), int(match.group(1)))

@@ -70,7 +70,8 @@ GROUPING_HINT = (
     r"\b(theo|tung|moi|cac|nhung|by|per|each|across|breakdown|phan theo|nao|which|top|nhat)\b"
 )
 UNSUPPORTED = re.compile(
-    r"\b(tai sao|vi sao|why|du bao|forecast|predict|du doan|cohort|retention|giu chan|chuyen doi|"
+    r"\b(luy ke|cumulative|running total|trung binh truot|moving average|xep hang|rank|ty trong|share of|"
+    r"trung vi|median|moi khach|per customer|each customer|tai sao|vi sao|why|du bao|forecast|predict|du doan|cohort|retention|giu chan|chuyen doi|"
     r"conversion|churn|roi bo|ngung mua|luong|salary|lifetime|clv|ltv|email|so dien thoai|phone|dia chi|address)\b"
 )
 TOP = re.compile(
@@ -368,7 +369,16 @@ def _build_metric_sql(plan: _Plan, layer: SemanticLayer) -> str:
 
     select, group, time_dim = _dimension_sql(plan, customers)
     metric_alias = _alias(plan, *METRIC_ALIASES[plan.metric])
-    where = ["o.status <> 'cancelled'", *_time_condition(plan), *(f[1] for f in plan.filters)]
+    cancelled = any(f[0] == "status" for f in plan.filters)
+    where = [
+        *([] if cancelled else ["o.status <> 'cancelled'"]),
+        *_time_condition(plan),
+        *(f[1] for f in plan.filters),
+    ]
+    if plan.metric == "customers" and not plan.time and not plan.filters and plan.dimension is None:
+        # "Có bao nhiêu khách hàng?" means the customer base, not customers who ordered.
+        alias = _alias(plan, *METRIC_ALIASES["customers"])
+        return f"SELECT COUNT(*) AS {alias} FROM {layer.visible_name('customers', plan.role)}"
     sql = f"SELECT {', '.join([*select, f'{_metric_sql(plan.metric)} AS {metric_alias}'])} FROM orders o"
     if joins:
         sql += " " + " ".join(joins)
@@ -552,6 +562,12 @@ def match(
     _detect_filters(t, plan)
     _detect_dimension(t, plan)
 
+    if (
+        plan.metric == "orders"
+        and re.search(r"\b(huy|bi huy|cancel\w*)\b", t)
+        and not re.search(r"trang thai|status", t)
+    ):
+        plan.filters.append(("status", "o.status = 'cancelled'", "cancelled"))
     special = _special(t, plan, layer)
     if special:
         intent, sql = special

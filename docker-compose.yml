@@ -53,6 +53,21 @@ services:
       interval: 5s
       retries: 20
 
+  worker:
+    build: ./backend
+    command: ["arq", "app.worker.WorkerSettings"]
+    env_file: .env
+    depends_on:
+      bootstrap: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+
+  # Optional local model: `docker compose --profile local-llm up -d`, then set
+  # OLLAMA_BASE_URL=http://ollama:11434 and pull models (see README).
+  ollama:
+    image: ollama/ollama:latest
+    profiles: ["local-llm"]
+    volumes: [ollama-data:/root/.ollama]
+
   web:
     build: ./frontend
     ports: ["${WEB_PORT:-8080}:80"]
@@ -62,3 +77,4 @@ services:
 volumes:
   app-db-data:
   warehouse-data:
+  ollama-data:

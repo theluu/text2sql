@@ -97,7 +97,7 @@ async def test_approve_reexecutes_as_the_asker_and_notifies(
     assert emails and all(e.startswith("***@") for e in emails)  # still the masked view
 
     assert db(pg_settings, "SELECT source FROM verified_examples") == [("review",)]
-    assert db(pg_settings, "SELECT suite, role, expected_behavior FROM eval_cases") == [
+    assert db(pg_settings, "SELECT suite, role, expected_behavior FROM eval_cases WHERE source = 'review'") == [
         ("review", "viewer", "answer")
     ]
 

@@ -52,5 +52,7 @@ jobs:
       - run: |
           curl -fsS -X POST localhost:8080/api/auth/login -H 'Content-Type: application/json' \
             -d '{"email":"viewer@demo.vn","password":"demo1234"}' | grep -q access_token
+      - name: Eval smoke gate (cassette replay, no API keys needed)
+        run: docker compose exec -T api python -m app.cli eval --suite smoke --mode chain --cassette replay --gate eval/baseline.json --out /tmp/eval.json
       - if: failure()
         run: docker compose logs

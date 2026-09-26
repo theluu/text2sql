@@ -129,5 +129,5 @@ def clean_app_db(pg_settings: Settings, migrated_app_db: None) -> None:
     with psycopg.connect(sync_dsn(pg_settings.app_db_url), autocommit=True) as conn:
         conn.execute(
             "TRUNCATE query_runs, conversations, pipeline_steps, llm_calls, guardrail_events, "
-            "judge_verdicts, review_items, verified_examples, app_settings CASCADE"
+            "judge_verdicts, review_items, verified_examples, app_settings, eval_runs, eval_results CASCADE"
         )
