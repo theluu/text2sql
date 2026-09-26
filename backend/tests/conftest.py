@@ -93,3 +93,13 @@ async def client(pg_settings: Settings, demo_users: None) -> AsyncIterator[httpx
     async with httpx.AsyncClient(transport=transport, base_url="http://test") as http:
         yield http
     await app.state.engine.dispose()
+
+
+@pytest.fixture(scope="session")
+def redis_url() -> Iterator[str]:
+    from testcontainers.community.redis import RedisContainer
+
+    with RedisContainer("redis:7-alpine") as container:
+        host = container.get_container_host_ip()
+        port = container.get_exposed_port(6379)
+        yield f"redis://{host}:{port}/0"
