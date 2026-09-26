@@ -1,12 +1,14 @@
-from collections.abc import Iterator
+from collections.abc import AsyncIterator, Iterator
 
+import httpx
 import psycopg
 import pytest
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from testcontainers.community.postgres import PostgresContainer
 
 from app.core.config import Settings
 from app.warehouse.bootstrap import apply_schema
-from tests.helpers import make_settings
+from tests.helpers import DEMO_PASSWORD, make_settings
 
 TEST_DATABASES = ("app_test", "warehouse_test", "app_migration_test")
 
@@ -70,3 +72,24 @@ def migrated_app_db(pg_settings: Settings) -> None:
     from app.db.migrate import upgrade_head
 
     upgrade_head(pg_settings.app_db_url)
+
+
+@pytest.fixture(scope="session")
+async def demo_users(pg_settings: Settings, migrated_app_db: None) -> None:
+    from app.auth.demo_users import seed_demo_users
+
+    engine = create_async_engine(pg_settings.app_db_url)
+    async with async_sessionmaker(engine)() as session:
+        await seed_demo_users(session, DEMO_PASSWORD)
+    await engine.dispose()
+
+
+@pytest.fixture
+async def client(pg_settings: Settings, demo_users: None) -> AsyncIterator[httpx.AsyncClient]:
+    from app.main import create_app
+
+    app = create_app(pg_settings)
+    transport = httpx.ASGITransport(app=app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://test") as http:
+        yield http
+    await app.state.engine.dispose()

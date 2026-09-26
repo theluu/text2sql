@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
-from app.api.routes import health
+from app.api.routes import auth, health
 from app.core.config import Settings, get_settings
 from app.core.logging import configure_logging
 
@@ -24,4 +24,5 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.engine = engine
     app.state.sessionmaker = async_sessionmaker(engine, expire_on_commit=False)
     app.include_router(health.router, prefix="/api")
+    app.include_router(auth.router, prefix="/api/auth")
     return app

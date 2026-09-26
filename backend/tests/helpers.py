@@ -1,5 +1,7 @@
 from typing import Any
 
+import httpx
+
 from app.core.config import Settings
 
 
@@ -20,3 +22,14 @@ def make_settings(**overrides: Any) -> Settings:
 
 def sync_dsn(url: str) -> str:
     return url.replace("postgresql+asyncpg://", "postgresql://")
+
+
+DEMO_PASSWORD = "demo1234"
+
+
+async def login_token(client: httpx.AsyncClient, email: str) -> str:
+    response = await client.post(
+        "/api/auth/login", json={"email": email, "password": DEMO_PASSWORD}
+    )
+    assert response.status_code == 200, response.text
+    return str(response.json()["access_token"])
