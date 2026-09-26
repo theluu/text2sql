@@ -1,0 +1,40 @@
+{
+  "brand": {
+    "name": "Datum",
+    "product": "BI Copilot",
+    "tagline": "Hỏi dữ liệu bằng ngôn ngữ tự nhiên — có kiểm chứng, có người duyệt.",
+    "pillars": "Guardrails · AI Judge · Failover · Human review"
+  },
+  "auth": {
+    "title": "Đăng nhập",
+    "subtitle": "Dùng tài khoản nội bộ hoặc chọn tài khoản demo.",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "submit": "Đăng nhập",
+    "submitting": "Đang đăng nhập…",
+    "demo": "Tài khoản demo",
+    "roles": { "viewer": "Người xem", "analyst": "Chuyên viên dữ liệu", "admin": "Quản trị" },
+    "errors": {
+      "invalid_credentials": "Email hoặc mật khẩu không đúng.",
+      "generic": "Không thể đăng nhập. Vui lòng thử lại."
+    }
+  },
+  "nav": { "ask": "Hỏi dữ liệu" },
+  "shell": {
+    "primaryNav": "Điều hướng chính",
+    "logout": "Đăng xuất",
+    "theme": { "toLight": "Chuyển sang giao diện sáng", "toDark": "Chuyển sang giao diện tối" },
+    "language": "Ngôn ngữ"
+  },
+  "ask": {
+    "eyebrow": "Xin chào, {{name}}",
+    "title": "Bạn muốn biết điều gì hôm nay?",
+    "subtitle": "Đặt câu hỏi về doanh thu, khách hàng, tồn kho… Hệ thống sinh SQL, tự kiểm tra và cho bạn thấy từng bước.",
+    "suggestions": [
+      "Doanh thu theo khu vực trong quý này so với quý trước?",
+      "Top 10 sản phẩm bán chạy nhất tháng trước",
+      "Những cửa hàng nào có tồn kho dưới mức đặt lại?",
+      "Tỷ lệ hoàn hàng theo danh mục năm 2025"
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "brand": {
+    "name": "Datum",
+    "product": "BI Copilot",
+    "tagline": "Ask your data in plain language — verified, with a human in the loop.",
+    "pillars": "Guardrails · AI Judge · Failover · Human review"
+  },
+  "auth": {
+    "title": "Sign in",
+    "subtitle": "Use your company account or pick a demo account.",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "submitting": "Signing in…",
+    "demo": "Demo accounts",
+    "roles": { "viewer": "Viewer", "analyst": "Data analyst", "admin": "Admin" },
+    "errors": {
+      "invalid_credentials": "Incorrect email or password.",
+      "generic": "Could not sign in. Please try again."
+    }
+  },
+  "nav": { "ask": "Ask data" },
+  "shell": {
+    "primaryNav": "Primary navigation",
+    "logout": "Sign out",
+    "theme": { "toLight": "Switch to light theme", "toDark": "Switch to dark theme" },
+    "language": "Language"
+  },
+  "ask": {
+    "eyebrow": "Hello, {{name}}",
+    "title": "What would you like to know today?",
+    "subtitle": "Ask about revenue, customers, inventory… The system writes SQL, checks itself and shows you every step.",
+    "suggestions": [
+      "Revenue by region this quarter vs last quarter?",
+      "Top 10 best-selling products last month",
+      "Which stores have stock below reorder level?",
+      "Return rate by category in 2025"
+    ]
+  }
+}
