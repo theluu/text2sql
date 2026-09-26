@@ -58,6 +58,12 @@ async def _enqueue(services: Services, run_id: uuid.UUID) -> str:
     return "inline"
 
 
+@router.get("/eval/modes")
+async def modes(_: Analyst, services: ServicesDep) -> dict[str, list[str]]:
+    return {"suites": ["smoke", "full", "review"],
+            "modes": ["chain", "rule_based", *(f"provider={name}" for name in sorted(services.providers))]}  # fmt: skip
+
+
 @router.get("/eval/runs")
 async def list_runs(_: Analyst, session: Session) -> list[dict[str, Any]]:
     done = dict(
