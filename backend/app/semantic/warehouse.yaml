@@ -1,0 +1,210 @@
+# Semantic layer: the single source of truth for business meaning, metrics and PII.
+# Every table/column here must exist in app/warehouse/schema (enforced by tests).
+# `viewer_via`: viewers read this table through the named masked view instead.
+
+tables:
+  regions:
+    vi: Vùng kinh tế của Việt Nam
+    en: Economic regions of Vietnam
+    columns:
+      region_id: {type: smallint, vi: Mã vùng, en: Region id}
+      name: {type: text, vi: Tên vùng (tiếng Việt), en: Region name in Vietnamese, sample: [Đồng bằng sông Hồng, Đông Nam Bộ, Duyên hải miền Trung]}
+      name_en: {type: text, vi: Tên vùng (tiếng Anh), en: Region name in English, sample: [Red River Delta, Southeast, Central Coast]}
+
+  stores:
+    vi: Cửa hàng (offline) và kênh online (store_id = 1)
+    en: Stores; store_id 1 is the online channel
+    columns:
+      store_id: {type: integer, vi: Mã cửa hàng, en: Store id}
+      name: {type: text, vi: Tên cửa hàng, en: Store name}
+      city: {type: text, vi: Thành phố, en: City}
+      region_id: {type: smallint, vi: Vùng, en: Region, fk: regions.region_id}
+      channel: {type: text, vi: Kênh bán (offline/online), en: Sales channel, sample: [offline, online]}
+      opened_on: {type: date, vi: Ngày khai trương, en: Opening date}
+
+  employees:
+    vi: Nhân viên cửa hàng
+    en: Store employees
+    viewer_via: v_employees_masked
+    columns:
+      employee_id: {type: integer, vi: Mã nhân viên, en: Employee id}
+      full_name: {type: text, vi: Họ tên, en: Full name}
+      store_id: {type: integer, vi: Cửa hàng làm việc, en: Store, fk: stores.store_id}
+      position: {type: text, vi: Chức vụ, en: Position, sample: [Nhân viên bán hàng, Thu ngân, Kho vận, Quản lý cửa hàng]}
+      hired_on: {type: date, vi: Ngày vào làm, en: Hire date}
+      salary: {type: numeric, vi: Lương tháng (VND), en: Monthly salary (VND), pii: true}
+
+  customers:
+    vi: Khách hàng
+    en: Customers
+    viewer_via: v_customers_masked
+    columns:
+      customer_id: {type: integer, vi: Mã khách hàng, en: Customer id}
+      full_name: {type: text, vi: Họ tên, en: Full name}
+      email: {type: text, vi: Email, en: Email, pii: true}
+      phone: {type: text, vi: Số điện thoại, en: Phone number, pii: true}
+      address: {type: text, vi: Địa chỉ, en: Street address, pii: true}
+      city: {type: text, vi: Thành phố, en: City}
+      region_id: {type: smallint, vi: Vùng, en: Region, fk: regions.region_id}
+      segment: {type: text, vi: Hạng thành viên, en: Loyalty segment, sample: [regular, silver, gold, platinum]}
+      signup_date: {type: date, vi: Ngày đăng ký, en: Signup date}
+
+  categories:
+    vi: Danh mục sản phẩm, 2 cấp (parent_id NULL là danh mục gốc)
+    en: Product categories, two levels (parent_id NULL = top level)
+    columns:
+      category_id: {type: smallint, vi: Mã danh mục, en: Category id}
+      name: {type: text, vi: Tên danh mục (tiếng Việt), en: Category name in Vietnamese, sample: [Điện thoại, Laptop, Thời trang nam, Mỹ phẩm]}
+      name_en: {type: text, vi: Tên danh mục (tiếng Anh), en: Category name in English, sample: [Smartphones, Laptops, Men's Fashion, Cosmetics]}
+      parent_id: {type: smallint, vi: Danh mục cha, en: Parent category, fk: categories.category_id}
+
+  products:
+    vi: Sản phẩm
+    en: Products
+    columns:
+      product_id: {type: integer, vi: Mã sản phẩm, en: Product id}
+      sku: {type: text, vi: Mã SKU, en: SKU}
+      name: {type: text, vi: Tên sản phẩm, en: Product name}
+      category_id: {type: smallint, vi: Danh mục (cấp lá), en: Leaf category, fk: categories.category_id}
+      brand: {type: text, vi: Thương hiệu, en: Brand}
+      unit_price: {type: numeric, vi: Giá niêm yết (VND), en: List price (VND)}
+      unit_cost: {type: numeric, vi: Giá vốn (VND), en: Unit cost (VND)}
+      is_active: {type: boolean, vi: Còn kinh doanh, en: Active}
+
+  inventory:
+    vi: Tồn kho theo cửa hàng và sản phẩm
+    en: Stock on hand per store and product
+    columns:
+      store_id: {type: integer, vi: Cửa hàng, en: Store, fk: stores.store_id}
+      product_id: {type: integer, vi: Sản phẩm, en: Product, fk: products.product_id}
+      quantity_on_hand: {type: integer, vi: Số lượng tồn, en: Quantity on hand}
+      reorder_level: {type: integer, vi: Mức đặt hàng lại, en: Reorder level}
+      updated_at: {type: timestamptz, vi: Cập nhật lúc, en: Updated at}
+
+  promotions:
+    vi: Chương trình khuyến mãi
+    en: Promotions
+    columns:
+      promotion_id: {type: integer, vi: Mã khuyến mãi, en: Promotion id}
+      name: {type: text, vi: Tên chương trình, en: Promotion name}
+      discount_pct: {type: numeric, vi: Tỷ lệ giảm (0-1), en: Discount fraction (0-1)}
+      starts_on: {type: date, vi: Ngày bắt đầu, en: Start date}
+      ends_on: {type: date, vi: Ngày kết thúc, en: End date}
+
+  orders:
+    vi: Đơn hàng
+    en: Orders
+    columns:
+      order_id: {type: integer, vi: Mã đơn, en: Order id}
+      customer_id: {type: integer, vi: Khách hàng, en: Customer, fk: customers.customer_id}
+      store_id: {type: integer, vi: Cửa hàng/kênh bán, en: Store, fk: stores.store_id}
+      employee_id: {type: integer, vi: Nhân viên bán (NULL nếu online), en: Sales employee (NULL online), fk: employees.employee_id}
+      promotion_id: {type: integer, vi: Khuyến mãi áp dụng, en: Applied promotion, fk: promotions.promotion_id}
+      order_date: {type: timestamptz, vi: Thời điểm đặt hàng, en: Order timestamp}
+      status: {type: text, vi: Trạng thái đơn, en: Order status, sample: [completed, cancelled, returned, pending]}
+
+  order_items:
+    vi: Dòng sản phẩm trong đơn hàng
+    en: Order line items
+    columns:
+      order_id: {type: integer, vi: Đơn hàng, en: Order, fk: orders.order_id}
+      line_no: {type: smallint, vi: Số dòng, en: Line number}
+      product_id: {type: integer, vi: Sản phẩm, en: Product, fk: products.product_id}
+      quantity: {type: integer, vi: Số lượng, en: Quantity}
+      unit_price: {type: numeric, vi: Đơn giá bán (VND), en: Unit selling price (VND)}
+      discount: {type: numeric, vi: Tỷ lệ giảm giá (0-1), en: Discount fraction (0-1)}
+
+  payments:
+    vi: Thanh toán của đơn hàng
+    en: Order payments
+    columns:
+      payment_id: {type: integer, vi: Mã thanh toán, en: Payment id}
+      order_id: {type: integer, vi: Đơn hàng, en: Order, fk: orders.order_id}
+      method: {type: text, vi: Phương thức thanh toán, en: Payment method, sample: [cash, card, momo, zalopay, bank_transfer, cod]}
+      amount: {type: numeric, vi: Số tiền (VND), en: Amount (VND)}
+      paid_at: {type: timestamptz, vi: Thời điểm thanh toán, en: Paid at}
+
+  returns:
+    vi: Hàng bị trả lại
+    en: Product returns
+    columns:
+      return_id: {type: integer, vi: Mã phiếu trả, en: Return id}
+      order_id: {type: integer, vi: Đơn hàng, en: Order, fk: orders.order_id}
+      product_id: {type: integer, vi: Sản phẩm, en: Product, fk: products.product_id}
+      quantity: {type: integer, vi: Số lượng trả, en: Returned quantity}
+      reason: {type: text, vi: Lý do trả, en: Return reason}
+      returned_at: {type: timestamptz, vi: Thời điểm trả, en: Returned at}
+
+views:
+  v_customers_masked:
+    base: customers
+    vi: Khách hàng (email/điện thoại đã che, không có địa chỉ)
+    en: Customers with masked email/phone and no address
+    columns: [customer_id, full_name, email, phone, city, region_id, segment, signup_date]
+  v_employees_masked:
+    base: employees
+    vi: Nhân viên (không có lương)
+    en: Employees without salary
+    columns: [employee_id, full_name, store_id, position, hired_on]
+
+metrics:
+  revenue:
+    vi: Doanh thu (doanh thu thuần)
+    en: Revenue (net sales)
+    sql: SUM(order_items.quantity * order_items.unit_price * (1 - order_items.discount))
+    filter: orders.status <> 'cancelled'
+    tables: [orders, order_items]
+  order_count:
+    vi: Số đơn hàng
+    en: Number of orders
+    sql: COUNT(DISTINCT orders.order_id)
+    filter: orders.status <> 'cancelled'
+    tables: [orders]
+  aov:
+    vi: Giá trị đơn hàng trung bình (AOV)
+    en: Average order value
+    sql: revenue / order_count
+    tables: [orders, order_items]
+  units_sold:
+    vi: Số lượng sản phẩm bán ra
+    en: Units sold
+    sql: SUM(order_items.quantity)
+    filter: orders.status <> 'cancelled'
+    tables: [orders, order_items]
+  gross_margin:
+    vi: Lợi nhuận gộp
+    en: Gross margin
+    sql: SUM(order_items.quantity * (order_items.unit_price * (1 - order_items.discount) - products.unit_cost))
+    filter: orders.status <> 'cancelled'
+    tables: [orders, order_items, products]
+  return_rate:
+    vi: Tỷ lệ hoàn hàng (theo đơn)
+    en: Return rate (by order)
+    sql: COUNT(*) FILTER (WHERE orders.status = 'returned')::numeric / NULLIF(COUNT(*) FILTER (WHERE orders.status <> 'cancelled'), 0)
+    tables: [orders]
+  low_stock:
+    vi: Tồn kho thấp (dưới mức đặt hàng lại)
+    en: Low stock (below reorder level)
+    sql: inventory.quantity_on_hand < inventory.reorder_level
+    tables: [inventory]
+
+glossary:
+  - {term: doanh thu, en: revenue, maps_to: metric.revenue}
+  - {term: doanh số, en: sales, maps_to: metric.revenue}
+  - {term: số đơn, en: order count, maps_to: metric.order_count}
+  - {term: giá trị đơn trung bình, en: AOV, maps_to: metric.aov}
+  - {term: lợi nhuận, en: profit, maps_to: metric.gross_margin}
+  - {term: hoàn hàng, en: returns, maps_to: metric.return_rate}
+  - {term: trả hàng, en: returned, maps_to: table.returns}
+  - {term: tồn kho, en: inventory stock, maps_to: table.inventory}
+  - {term: khu vực, en: region, maps_to: table.regions}
+  - {term: miền, en: area, maps_to: table.regions}
+  - {term: ngành hàng, en: category, maps_to: table.categories}
+  - {term: danh mục, en: category, maps_to: table.categories}
+  - {term: thương hiệu, en: brand, maps_to: column.products.brand}
+  - {term: kênh online, en: online channel, maps_to: column.stores.channel}
+  - {term: khách VIP, en: VIP customers, maps_to: column.customers.segment}
+  - {term: phương thức thanh toán, en: payment method, maps_to: column.payments.method}
+  - {term: khuyến mãi, en: promotion, maps_to: table.promotions}
+  - {term: nhân viên, en: employee staff, maps_to: table.employees}
+  - {term: lương, en: salary, maps_to: column.employees.salary}
