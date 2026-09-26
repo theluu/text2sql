@@ -105,7 +105,7 @@ async def run_query(
     started = time.perf_counter()
     try:
         async with await _connect(settings, role, timeout_ms) as conn, conn.cursor() as cur:
-            await cur.execute(sql)  # type: ignore[arg-type]  # validated, re-rendered SQL
+            await cur.execute(sql)  # validated, re-rendered by the L3 guard
             columns = [d.name for d in cur.description or []]
             raw = await cur.fetchmany(max_rows + 1)
     except psycopg.OperationalError as error:
@@ -130,7 +130,7 @@ async def explain_cost(settings: Settings, role: str, sql: str) -> float:
     """Planner's total cost estimate (no execution)."""
     try:
         async with await _connect(settings, role, DEFAULT_TIMEOUT_MS) as conn, conn.cursor() as cur:
-            await cur.execute(f"EXPLAIN (FORMAT JSON) {sql}")  # type: ignore[arg-type]
+            await cur.execute(f"EXPLAIN (FORMAT JSON) {sql}")
             row = await cur.fetchone()
     except psycopg.OperationalError as error:
         if isinstance(error, errors.QueryCanceled):
