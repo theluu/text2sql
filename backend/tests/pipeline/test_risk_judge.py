@@ -98,3 +98,19 @@ async def test_judge_labels_same_vendor_when_only_one_is_left() -> None:
     result = await judge(router, question="q", schema_text="s", sql="SELECT 1",
                          preview={"columns": [], "rows": []}, generator_vendor="anthropic")  # fmt: skip
     assert result.same_vendor
+
+
+@pytest.mark.parametrize(
+    ("question", "hard"),
+    [
+        ("Doanh thu lũy kế theo tháng năm 2025", True),
+        ("Doanh thu quý này so với quý trước", True),
+        ("Xếp hạng cửa hàng theo doanh thu", True),
+        ("Tình hình kinh doanh thế nào rồi?", False),
+        ("Top 10 sản phẩm bán chạy tháng trước", False),
+    ],
+)
+def test_hard_question_heuristic(question: str, hard: bool) -> None:
+    from app.pipeline.context import is_hard
+
+    assert is_hard(question, None) is hard

@@ -81,8 +81,6 @@ def validate_sql(
     text = clean_sql(raw)
     if not text:
         return _fail("SYNTAX_ERROR", "empty SQL")
-    if ";" in text:
-        return _fail("MULTI_STATEMENT", "only one statement is allowed")
     try:
         statements = [s for s in sqlglot.parse(text, read="postgres") if s is not None]
     except SqlglotError as error:

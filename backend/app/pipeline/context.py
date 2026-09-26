@@ -96,8 +96,10 @@ HARD_SIGNALS = re.compile(
 
 
 def is_hard(question: str, linked: LinkedSchema | None) -> bool:
-    """Heuristic difficulty: window/comparison phrasing, or many tables at once."""
-    signals = len(set(HARD_SIGNALS.findall(normalize(question))))
-    if linked and len(linked.tables) >= 6:
-        signals += 1
-    return signals >= 1
+    """Heuristic difficulty from phrasing (window, comparison, share, ranking…).
+
+    Table count is not used: semantic linking pulls in generous context, so it would mark
+    most questions hard and triple their LLM cost for self-consistency.
+    """
+    del linked
+    return bool(HARD_SIGNALS.search(normalize(question)))

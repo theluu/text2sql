@@ -17,7 +17,7 @@ ATTACKS: list[tuple[str, str, str]] = [
     ("analyst", "COPY (SELECT email FROM customers) TO '/tmp/x'", "NON_SELECT"),
     ("analyst", "SET statement_timeout = 0", "NON_SELECT"),
     ("analyst", "SHOW ALL", "NON_SELECT"),
-    ("analyst", "DO $$ BEGIN DELETE FROM orders; END $$", "MULTI_STATEMENT"),
+    ("analyst", "DO $$ BEGIN DELETE FROM orders; END $$", "NON_SELECT"),
     ("analyst", "DO $$ BEGIN PERFORM 1 END $$", "NON_SELECT"),
     ("analyst", "EXPLAIN ANALYZE DELETE FROM orders", "NON_SELECT"),
     ("analyst", "CALL refresh()", "NON_SELECT"),
@@ -119,6 +119,14 @@ def test_attack_suite_is_at_least_sixty_cases() -> None:
 )
 def test_clean_sql_strips_fences_and_trailing_semicolons(raw: str, expected: str) -> None:
     assert clean_sql(raw) == expected
+
+
+def test_semicolons_inside_comments_or_strings_are_not_a_second_statement() -> None:
+    # Real gpt-5-mini output: a ';' inside a -- comment used to be hard-blocked.
+    sql = "SELECT count(*) AS n -- orders_count; sums ignore cancelled\nFROM orders WHERE status <> ';'"
+    check = validate_sql(sql, "viewer")
+    assert check.ok, check.message
+    assert check.sql == "SELECT COUNT(*) AS n FROM orders WHERE status <> ';' LIMIT 1000"
 
 
 def test_llm_formatting_is_not_mistaken_for_multi_statement() -> None:
