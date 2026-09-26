@@ -5,6 +5,7 @@ import psycopg
 from psycopg import sql
 
 from app.core.config import Settings
+from app.warehouse.seed import seed
 
 SCHEMA_DIR = Path(__file__).parent / "schema"
 
@@ -38,3 +39,28 @@ def apply_schema(conn: psycopg.Connection[Any], settings: Settings) -> None:
     _run_file(conn, "02_views.sql")
     ensure_roles(conn, settings)
     _run_file(conn, "03_grants.sql")
+
+
+def table_counts(conn: psycopg.Connection[Any]) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for table in WAREHOUSE_TABLES:
+        row = conn.execute(
+            sql.SQL("SELECT count(*) FROM {}").format(sql.Identifier(table))
+        ).fetchone()
+        counts[table] = int(row[0]) if row else 0
+    return counts
+
+
+def _is_seeded(conn: psycopg.Connection[Any]) -> bool:
+    row = conn.execute("SELECT EXISTS (SELECT 1 FROM orders)").fetchone()
+    return bool(row and row[0])
+
+
+def bootstrap_warehouse(settings: Settings, scale: float) -> dict[str, int]:
+    """Create schema/roles and seed once. Safe to run on every deploy."""
+    with psycopg.connect(settings.warehouse_dsn("admin"), autocommit=True) as conn:
+        apply_schema(conn, settings)
+        if not _is_seeded(conn):
+            with conn.transaction():
+                seed(conn, scale=scale)
+        return table_counts(conn)

@@ -56,3 +56,10 @@ def warehouse_schema(pg_settings: Settings) -> None:
 def wh_admin(pg_settings: Settings, warehouse_schema: None) -> Iterator[psycopg.Connection]:
     with psycopg.connect(pg_settings.warehouse_dsn("admin"), autocommit=True) as conn:
         yield conn
+
+
+@pytest.fixture(scope="session")
+def seeded_warehouse(pg_settings: Settings, warehouse_schema: None) -> dict[str, int]:
+    from app.warehouse.bootstrap import bootstrap_warehouse
+
+    return bootstrap_warehouse(pg_settings, scale=pg_settings.warehouse_seed_scale)
