@@ -4,6 +4,9 @@ import { cleanup } from '@testing-library/react'
 import { afterEach, vi } from 'vitest'
 import i18n from '@/i18n'
 
+// jsdom lacks scrollTo; the router calls it on navigation.
+window.scrollTo = () => {}
+
 afterEach(async () => {
   cleanup()
   vi.unstubAllGlobals()

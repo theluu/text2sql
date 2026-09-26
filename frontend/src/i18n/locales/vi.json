@@ -3,7 +3,7 @@
     "name": "Datum",
     "product": "BI Copilot",
     "tagline": "Hỏi dữ liệu bằng ngôn ngữ tự nhiên — có kiểm chứng, có người duyệt.",
-    "pillars": "Guardrails · AI Judge · Failover · Human review"
+    "pillars": "Mỗi câu trả lời đều qua kiểm tra an toàn và được AI chấm điểm. Câu nào chưa chắc chắn sẽ được chuyên viên dữ liệu duyệt trước khi đến tay bạn."
   },
   "auth": {
     "title": "Đăng nhập",
@@ -13,17 +13,26 @@
     "submit": "Đăng nhập",
     "submitting": "Đang đăng nhập…",
     "demo": "Tài khoản demo",
-    "roles": { "viewer": "Người xem", "analyst": "Chuyên viên dữ liệu", "admin": "Quản trị" },
+    "roles": {
+      "viewer": "Người xem",
+      "analyst": "Chuyên viên dữ liệu",
+      "admin": "Quản trị"
+    },
     "errors": {
       "invalid_credentials": "Email hoặc mật khẩu không đúng.",
       "generic": "Không thể đăng nhập. Vui lòng thử lại."
     }
   },
-  "nav": { "ask": "Hỏi dữ liệu" },
+  "nav": {
+    "ask": "Hỏi dữ liệu"
+  },
   "shell": {
     "primaryNav": "Điều hướng chính",
     "logout": "Đăng xuất",
-    "theme": { "toLight": "Chuyển sang giao diện sáng", "toDark": "Chuyển sang giao diện tối" },
+    "theme": {
+      "toLight": "Chuyển sang giao diện sáng",
+      "toDark": "Chuyển sang giao diện tối"
+    },
     "language": "Ngôn ngữ"
   },
   "ask": {

@@ -7,14 +7,16 @@ Thiết kế: `docs/superpowers/specs/2026-09-26-text2sql-design.md`.
 
 ```bash
 make up          # tạo .env (JWT_SECRET ngẫu nhiên) và khởi động toàn bộ stack
-make logs        # theo dõi bootstrap: migrate → seed warehouse → demo users
+open http://localhost:8080
 ```
 
 Tài khoản demo (mật khẩu `demo1234`): `viewer@demo.vn`, `analyst@demo.vn`, `admin@demo.vn`.
 
+Dev frontend với hot reload: `cd frontend && npm run dev` (proxy `/api` → `localhost:8000`).
+
 ## Phát triển
 
 ```bash
-make test-api    # cần Docker (testcontainers)
-make lint-api
+make test        # backend cần Docker (testcontainers)
+make lint
 ```

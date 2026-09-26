@@ -3,7 +3,7 @@
     "name": "Datum",
     "product": "BI Copilot",
     "tagline": "Ask your data in plain language — verified, with a human in the loop.",
-    "pillars": "Guardrails · AI Judge · Failover · Human review"
+    "pillars": "Every answer passes safety checks and is scored by an AI judge. Anything uncertain is reviewed by a data analyst before it reaches you."
   },
   "auth": {
     "title": "Sign in",
@@ -13,17 +13,26 @@
     "submit": "Sign in",
     "submitting": "Signing in…",
     "demo": "Demo accounts",
-    "roles": { "viewer": "Viewer", "analyst": "Data analyst", "admin": "Admin" },
+    "roles": {
+      "viewer": "Viewer",
+      "analyst": "Data analyst",
+      "admin": "Admin"
+    },
     "errors": {
       "invalid_credentials": "Incorrect email or password.",
       "generic": "Could not sign in. Please try again."
     }
   },
-  "nav": { "ask": "Ask data" },
+  "nav": {
+    "ask": "Ask data"
+  },
   "shell": {
     "primaryNav": "Primary navigation",
     "logout": "Sign out",
-    "theme": { "toLight": "Switch to light theme", "toDark": "Switch to dark theme" },
+    "theme": {
+      "toLight": "Switch to light theme",
+      "toDark": "Switch to dark theme"
+    },
     "language": "Language"
   },
   "ask": {
