@@ -2,7 +2,10 @@ import { createRootRoute, createRoute, createRouter, Outlet, redirect, type Rout
 import { AskPage } from '@/features/ask/AskPage'
 import { LoginPage } from '@/features/auth/LoginPage'
 import { hasRole, type Role, useAuth } from '@/features/auth/store'
+import { ErrorView, NotFoundView } from '@/components/ErrorView'
+import { AdminPage } from '@/features/admin/AdminPage'
 import { EvalComparePage } from '@/features/eval/EvalComparePage'
+import { OpsPage } from '@/features/ops/OpsPage'
 import { EvalPage } from '@/features/eval/EvalPage'
 import { EvalRunPage } from '@/features/eval/EvalRunPage'
 import { ReviewDetailPage } from '@/features/review/ReviewDetailPage'
@@ -75,13 +78,22 @@ const evalCompareRoute = createRoute({
 })
 const evalRunRoute = createRoute({ getParentRoute: () => appRoute, path: '/eval/$runId', beforeLoad: requireRole('analyst'), component: EvalRunPage })
 
+const opsRoute = createRoute({ getParentRoute: () => appRoute, path: '/ops', beforeLoad: requireRole('admin'), component: OpsPage })
+const adminRoute = createRoute({ getParentRoute: () => appRoute, path: '/admin', beforeLoad: requireRole('admin'), component: AdminPage })
+
 const routeTree = rootRoute.addChildren([
   loginRoute,
-  appRoute.addChildren([askRoute, conversationRoute, reviewRoute, reviewDetailRoute, evalRoute, evalCompareRoute, evalRunRoute]),
+  appRoute.addChildren([askRoute, conversationRoute, reviewRoute, reviewDetailRoute, evalRoute, evalCompareRoute, evalRunRoute, opsRoute, adminRoute]),
 ])
 
 export function createAppRouter(history?: RouterHistory) {
-  return createRouter({ routeTree, history, defaultPreload: 'intent' })
+  return createRouter({
+    routeTree,
+    history,
+    defaultPreload: 'intent',
+    defaultErrorComponent: ({ error }) => <ErrorView error={error} />,
+    defaultNotFoundComponent: NotFoundView,
+  })
 }
 
 declare module '@tanstack/react-router' {

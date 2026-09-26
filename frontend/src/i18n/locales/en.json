@@ -313,5 +313,100 @@
       "reject": "block",
       "fail": "no answer"
     }
+  },
+  "ops": {
+    "title": "Operations",
+    "subtitle": "System health over the last {{days}} days: what the risk gate decided, which models ran, what guardrails blocked and what it cost.",
+    "range": "Range",
+    "days": "{{count}} days",
+    "kpi": {
+      "questions": "Questions",
+      "auto": "Auto-run",
+      "fallback": "Fallback mode",
+      "failover": "Failed over",
+      "p95": "Latency p95",
+      "cost": "LLM cost",
+      "pending": "Awaiting review",
+      "agreement": "Judge agrees with reviewers"
+    },
+    "decisions": "Risk-gate decisions per day",
+    "series": {
+      "auto": "Auto-run",
+      "review": "Needs review",
+      "reject": "Blocked",
+      "failed": "Not answered",
+      "failover": "Failed over",
+      "fallback": "Rule-based fallback"
+    },
+    "resilience": "Failover and fallback per day",
+    "costs": "LLM cost per day (USD)",
+    "providers": "Model providers",
+    "guardrails": "Top guardrail blocks",
+    "providerColumns": {
+      "name": "Model",
+      "status": "Status",
+      "circuit": "Circuit",
+      "calls": "Calls",
+      "errors": "Error rate",
+      "latency": "Avg latency"
+    },
+    "circuit": {
+      "closed": "Closed",
+      "open": "Open",
+      "half_open": "Half-open"
+    },
+    "notConfigured": "Not configured",
+    "chaos": "Chaos drill",
+    "notInChain": "Not in chain",
+    "empty": "No data in this range yet.",
+    "showTable": "Show as table",
+    "day": "Day"
+  },
+  "admin": {
+    "title": "Settings",
+    "subtitle": "Changes apply from the next question.",
+    "chain": "Model order (failover)",
+    "chainHint": "Drag, or use the arrow buttons, to reorder. Rule-based stays last as the safety net when every model fails.",
+    "moveUp": "Move {{name}} up",
+    "moveDown": "Move {{name}} down",
+    "resetCircuit": "Close circuit",
+    "chaos": "Chaos drill",
+    "chaosHint": "Selected providers are treated as failing, so you can watch failover in the trace.",
+    "risk": "Risk-gate thresholds",
+    "riskFields": {
+      "review_confidence": "Review when confidence is below",
+      "fallback_confidence": "Review fallback answers below",
+      "gray_cost": "EXPLAIN cost that needs review",
+      "max_cost": "Maximum EXPLAIN cost (block)",
+      "w_self": "Self-confidence weight",
+      "w_judge": "Judge weight",
+      "w_agreement": "Agreement weight"
+    },
+    "features": "Features",
+    "featureFields": {
+      "llm_classifier": "LLM screening for vague questions",
+      "self_consistency": "Cross-check hard questions",
+      "cache": "Result cache"
+    },
+    "save": "Save settings",
+    "saving": "Saving…",
+    "saved": "Saved. Applies from the next question.",
+    "reset": "Restore defaults",
+    "semantic": "Semantic layer",
+    "semanticHint": "Business descriptions, metrics and PII columns the pipeline uses to pick tables. Version {{version}} · embedder {{embedder}}.",
+    "tables": "Tables",
+    "metrics": "Metrics",
+    "glossary": "Glossary",
+    "viewerVia": "Viewers read it via {{view}}",
+    "viewOf": "View of {{base}}",
+    "notConfigured": "no key",
+    "providerModel": "{{model}}",
+    "ruleBased": "Rule-based (no LLM)",
+    "default": "default {{value}}"
+  },
+  "errors": {
+    "title": "Something went wrong showing this page.",
+    "reload": "Reload page",
+    "notFound": "Page not found."
   }
 }

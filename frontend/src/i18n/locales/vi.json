@@ -313,5 +313,100 @@
       "reject": "chặn",
       "fail": "không trả lời"
     }
+  },
+  "ops": {
+    "title": "Vận hành",
+    "subtitle": "Sức khỏe hệ thống trong {{days}} ngày gần nhất: cổng rủi ro quyết định ra sao, mô hình nào đang chạy, guardrail chặn gì và tốn bao nhiêu.",
+    "range": "Khoảng thời gian",
+    "days": "{{count}} ngày",
+    "kpi": {
+      "questions": "Câu hỏi",
+      "auto": "Tự chạy",
+      "fallback": "Chế độ dự phòng",
+      "failover": "Có chuyển mô hình",
+      "p95": "Độ trễ p95",
+      "cost": "Chi phí LLM",
+      "pending": "Chờ duyệt",
+      "agreement": "Judge đồng ý với người duyệt"
+    },
+    "decisions": "Quyết định của cổng rủi ro theo ngày",
+    "series": {
+      "auto": "Tự chạy",
+      "review": "Chờ duyệt",
+      "reject": "Bị chặn",
+      "failed": "Không trả lời được",
+      "failover": "Chuyển mô hình",
+      "fallback": "Dự phòng rule-based"
+    },
+    "resilience": "Chuyển mô hình và dự phòng theo ngày",
+    "costs": "Chi phí LLM theo ngày (USD)",
+    "providers": "Nhà cung cấp mô hình",
+    "guardrails": "Guardrail chặn nhiều nhất",
+    "providerColumns": {
+      "name": "Mô hình",
+      "status": "Trạng thái",
+      "circuit": "Circuit",
+      "calls": "Lượt gọi",
+      "errors": "Tỷ lệ lỗi",
+      "latency": "Độ trễ TB"
+    },
+    "circuit": {
+      "closed": "Bình thường",
+      "open": "Đang ngắt",
+      "half_open": "Đang thử lại"
+    },
+    "notConfigured": "Chưa cấu hình",
+    "chaos": "Giả lập sự cố",
+    "notInChain": "Không trong chuỗi",
+    "empty": "Chưa có dữ liệu trong khoảng này.",
+    "showTable": "Xem dạng bảng",
+    "day": "Ngày"
+  },
+  "admin": {
+    "title": "Cấu hình",
+    "subtitle": "Thay đổi có hiệu lực từ câu hỏi tiếp theo.",
+    "chain": "Thứ tự mô hình (failover)",
+    "chainHint": "Kéo thả hoặc dùng nút mũi tên để đổi thứ tự. Rule-based luôn ở cuối làm lưới an toàn khi mọi mô hình đều lỗi.",
+    "moveUp": "Đưa {{name}} lên",
+    "moveDown": "Đưa {{name}} xuống",
+    "resetCircuit": "Mở lại circuit",
+    "chaos": "Giả lập sự cố (chaos)",
+    "chaosHint": "Mô hình được chọn sẽ bị coi như lỗi, để kiểm tra failover trên trace.",
+    "risk": "Ngưỡng cổng rủi ro",
+    "riskFields": {
+      "review_confidence": "Duyệt khi độ tin cậy dưới",
+      "fallback_confidence": "Duyệt câu dự phòng khi tin cậy dưới",
+      "gray_cost": "Chi phí EXPLAIN vùng xám (cần duyệt)",
+      "max_cost": "Chi phí EXPLAIN tối đa (chặn)",
+      "w_self": "Trọng số tự đánh giá",
+      "w_judge": "Trọng số judge",
+      "w_agreement": "Trọng số đồng thuận"
+    },
+    "features": "Tính năng",
+    "featureFields": {
+      "llm_classifier": "Dùng LLM phân loại câu hỏi mơ hồ",
+      "self_consistency": "Đối chiếu nhiều phương án cho câu khó",
+      "cache": "Bộ nhớ đệm kết quả"
+    },
+    "save": "Lưu cấu hình",
+    "saving": "Đang lưu…",
+    "saved": "Đã lưu. Áp dụng từ câu hỏi tiếp theo.",
+    "reset": "Về mặc định",
+    "semantic": "Semantic layer",
+    "semanticHint": "Mô tả nghiệp vụ, metric và cột PII mà pipeline dùng để chọn bảng. Phiên bản {{version}} · embedder {{embedder}}.",
+    "tables": "Bảng",
+    "metrics": "Metric",
+    "glossary": "Thuật ngữ",
+    "viewerVia": "Người xem đọc qua {{view}}",
+    "viewOf": "View của {{base}}",
+    "notConfigured": "chưa có key",
+    "providerModel": "{{model}}",
+    "ruleBased": "Rule-based (không cần LLM)",
+    "default": "mặc định {{value}}"
+  },
+  "errors": {
+    "title": "Có lỗi khi hiển thị trang này.",
+    "reload": "Tải lại trang",
+    "notFound": "Không tìm thấy trang."
   }
 }

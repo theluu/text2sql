@@ -91,7 +91,10 @@ export function LoginPage() {
                 autoComplete="username"
                 required
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value)
+                  setError(null)
+                }}
                 className={field}
               />
             </label>
@@ -102,7 +105,10 @@ export function LoginPage() {
                 autoComplete="current-password"
                 required
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value)
+                  setError(null)
+                }}
                 className={field}
               />
             </label>
@@ -130,6 +136,7 @@ export function LoginPage() {
                     onClick={() => {
                       setEmail(account.email)
                       setPassword(DEMO_PASSWORD)
+                      setError(null)
                     }}
                     className="flex w-full items-center justify-between bg-surface px-3 py-2.5 text-left hover:bg-surface-2"
                   >

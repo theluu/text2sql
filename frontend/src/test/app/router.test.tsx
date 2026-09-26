@@ -44,6 +44,18 @@ describe('routing & login', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent(vi_.auth.errors.invalid_credentials)
   })
 
+  it('clears a stale error when the user edits the form or picks a demo account', async () => {
+    stubLogin(401, { detail: 'invalid_credentials' })
+    renderAt('/login')
+    const user = userEvent.setup()
+    await user.type(await screen.findByLabelText(vi_.auth.email), 'viewer@demo.vn')
+    await user.type(screen.getByLabelText(vi_.auth.password), 'nope')
+    await user.click(screen.getByRole('button', { name: vi_.auth.submit }))
+    await screen.findByRole('alert')
+    await user.click(screen.getByRole('button', { name: new RegExp(vi_.auth.roles.admin) }))
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+
   it('demo account buttons fill the form', async () => {
     renderAt('/login')
     const user = userEvent.setup()
