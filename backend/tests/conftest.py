@@ -1,4 +1,5 @@
-from collections.abc import AsyncIterator, Iterator
+from collections.abc import AsyncIterator, Callable, Iterator
+from typing import Any
 
 import httpx
 import psycopg
@@ -8,7 +9,7 @@ from testcontainers.community.postgres import PostgresContainer
 
 from app.core.config import Settings
 from app.warehouse.bootstrap import apply_schema
-from tests.helpers import DEMO_PASSWORD, make_settings
+from tests.helpers import DEMO_PASSWORD, make_settings, sync_dsn
 
 TEST_DATABASES = ("app_test", "warehouse_test", "app_migration_test")
 
@@ -103,3 +104,30 @@ def redis_url() -> Iterator[str]:
         host = container.get_container_host_ip()
         port = container.get_exposed_port(6379)
         yield f"redis://{host}:{port}/0"
+
+
+@pytest.fixture
+async def make_client(
+    pg_settings: Settings, demo_users: None, seeded_warehouse: dict[str, int]
+) -> AsyncIterator[Callable[..., Any]]:
+    apps: list[Any] = []
+
+    async def factory(providers: dict[str, Any]) -> httpx.AsyncClient:
+        from app.main import create_app
+
+        app = create_app(pg_settings, providers=providers)
+        apps.append(app)
+        return httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test")
+
+    yield factory
+    for app in apps:
+        await app.state.engine.dispose()
+
+
+@pytest.fixture
+def clean_app_db(pg_settings: Settings, migrated_app_db: None) -> None:
+    with psycopg.connect(sync_dsn(pg_settings.app_db_url), autocommit=True) as conn:
+        conn.execute(
+            "TRUNCATE query_runs, conversations, pipeline_steps, llm_calls, guardrail_events, "
+            "judge_verdicts, review_items, verified_examples, app_settings CASCADE"
+        )

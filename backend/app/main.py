@@ -6,7 +6,7 @@ from typing import Any
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
-from app.api.routes import auth, conversations, health, query
+from app.api.routes import auth, conversations, health, notifications, query, review
 from app.core.config import Settings, get_settings
 from app.core.logging import configure_logging
 from app.services.deps import init_services
@@ -37,4 +37,7 @@ def create_app(settings: Settings | None = None, **service_overrides: Any) -> Fa
     app.include_router(auth.router, prefix="/api/auth")
     app.include_router(query.router, prefix="/api")
     app.include_router(conversations.router, prefix="/api")
+    app.include_router(review.router, prefix="/api")
+    app.include_router(notifications.router, prefix="/api")
+    app.include_router(notifications.feedback_router, prefix="/api")
     return app

@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.core.config import Settings
 from app.core.ratelimit import RateLimiter
+from app.hitl.notifications import Notifier
 from app.llm.base import LLMProvider
 from app.llm.circuit import BreakerStore, CircuitBreaker, MemoryStore, RedisStore
 from app.llm.registry import build_providers, build_router
@@ -32,6 +33,7 @@ class Services:
     breaker: CircuitBreaker
     cache: ResultCache
     rate_limiter: RateLimiter
+    notifier: Notifier
     redis: "aioredis.Redis | None" = None
     extra: dict[str, Any] = field(default_factory=dict)
 
@@ -80,5 +82,6 @@ def build_services(
         breaker=CircuitBreaker(store),
         cache=ResultCache(redis),
         rate_limiter=RateLimiter(redis),
+        notifier=Notifier(redis),
         redis=redis,
     )

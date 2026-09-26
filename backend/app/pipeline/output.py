@@ -106,7 +106,8 @@ def summarize(result: QueryResult, lang: str) -> str:
                 )
             return f"{humanize(result.columns[0])}: {_fmt(row[0], lang)}"
         return "; ".join(
-            f"{humanize(c)}: {_fmt(v, lang)}" for c, v in list(zip(result.columns, row, strict=True))[:5]
+            f"{humanize(c)}: {_fmt(v, lang)}"
+            for c, v in list(zip(result.columns, row, strict=True))[:5]
         )
     rows_text = (f"{result.row_count} dòng" if vi else f"{result.row_count} rows") + (
         (" (đã giới hạn)" if vi else " (truncated)") if result.truncated else ""
