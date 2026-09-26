@@ -78,7 +78,8 @@ def _column_types(rows: list[tuple[Any, ...]], width: int) -> list[str]:
 async def _connect(settings: Settings, role: str, timeout_ms: int) -> psycopg.AsyncConnection[Any]:
     conn = await psycopg.AsyncConnection.connect(
         settings.warehouse_dsn(warehouse_role(role)),
-        options=f"-c statement_timeout={int(timeout_ms)}",
+        # Business dates are Vietnam time: "tháng 7" means July in ICT, not UTC.
+        options=f"-c statement_timeout={int(timeout_ms)} -c TimeZone=Asia/Ho_Chi_Minh",
         connect_timeout=5,
     )
     await conn.set_read_only(True)
