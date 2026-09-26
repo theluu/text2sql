@@ -130,10 +130,27 @@ def summarize(result: QueryResult, lang: str) -> str:
     rows_text = (f"{result.row_count} dòng" if vi else f"{result.row_count} rows") + (
         (" (đã giới hạn)" if vi else " (truncated)") if result.truncated else ""
     )
-    label = next((i for i in range(len(result.columns)) if i not in numeric), None)
+    labels = [i for i in range(len(result.columns)) if i not in numeric]
+    time_labels = [i for i in labels if _is_time(result, i)]
+    label = time_labels[0] if time_labels else (labels[0] if labels else None)
     metric = next((i for i in numeric if i != label), None)
     if label is None or metric is None:
         return rows_text + "."
+    series = _series_column(result, [i for i in labels if i != label]) if time_labels else None
+    if series is not None:
+        # Long format: first → last per series, never across series.
+        parts = []
+        for name in dict.fromkeys(row[series] for row in result.rows):
+            points = [
+                r for r in result.rows if r[series] == name and isinstance(r[metric], int | float)
+            ]
+            if not points:
+                continue
+            first, last = points[0][metric], points[-1][metric]
+            change = f" ({(last - first) / first * 100:+.1f}%)" if first else ""
+            parts.append(f"{name} {_fmt(first, lang)} → {_fmt(last, lang)}{change}")
+        span = f"{_fmt(result.rows[0][label], lang)} → {_fmt(result.rows[-1][label], lang)}"
+        return f"{rows_text}. {humanize(result.columns[metric])}, {span}: " + "; ".join(parts) + "."
     values = [(r[label], r[metric]) for r in result.rows if isinstance(r[metric], int | float)]
     if not values:
         return rows_text + "."

@@ -121,6 +121,13 @@ def test_long_format_gets_one_series_per_category() -> None:
     ]
     spec = chart_spec(_result(["month", "channel", "revenue"], ["text", "text", "number"], rows))
     assert spec == {"type": "line", "x": "month", "y": ["revenue"], "series": "channel"}
+    text = summarize(
+        _result(["month", "channel", "revenue"], ["text", "text", "number"], rows), "en"
+    )
+    assert (
+        text
+        == "4 rows. revenue, 2025-01 → 2025-02: offline 17 → 15 (-11.8%); online 10 → 9 (-10.0%)."
+    )
     many = [[f"2025-0{i}", f"store {i}", i] for i in range(1, 8)]
     assert "series" not in chart_spec(
         _result(["month", "store", "revenue"], ["text", "text", "number"], many)
