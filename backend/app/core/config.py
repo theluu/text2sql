@@ -1,3 +1,4 @@
+from datetime import date
 from functools import lru_cache
 from typing import Literal
 from urllib.parse import quote
@@ -26,6 +27,32 @@ class Settings(BaseSettings):
     jwt_secret: SecretStr
     jwt_ttl_minutes: int = 480
     demo_password: SecretStr = SecretStr("demo1234")
+
+    redis_url: str = "redis://redis:6379/0"
+    # Relative dates ("tháng trước", "this quarter") resolve against this day, the last
+    # day of seeded data, so answers and eval results are reproducible.
+    data_as_of: date = date(2026, 8, 31)
+
+    anthropic_api_key: SecretStr | None = None
+    anthropic_model: str = "claude-sonnet-5"
+    openai_api_key: SecretStr | None = None
+    openai_model: str = "gpt-5-mini"
+    openai_embedding_model: str = "text-embedding-3-small"
+    gemini_api_key: SecretStr | None = None
+    gemini_model: str = "gemini-2.5-flash"
+    ollama_base_url: str | None = None
+    ollama_model: str = "qwen2.5-coder:7b"
+    ollama_embedding_model: str = "bge-m3"
+
+    @field_validator("anthropic_api_key", "openai_api_key", "gemini_api_key", mode="before")
+    @classmethod
+    def _blank_key_is_none(cls, value: object) -> object:
+        return None if value == "" else value
+
+    @field_validator("ollama_base_url", mode="before")
+    @classmethod
+    def _blank_url_is_none(cls, value: object) -> object:
+        return None if value == "" else value
 
     @field_validator("jwt_secret")
     @classmethod
