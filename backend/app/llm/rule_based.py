@@ -71,7 +71,7 @@ GROUPING_HINT = (
 )
 UNSUPPORTED = re.compile(
     r"\b(tai sao|vi sao|why|du bao|forecast|predict|du doan|cohort|retention|giu chan|chuyen doi|"
-    r"conversion|churn|luong|salary|lifetime|clv|ltv|email|so dien thoai|phone|dia chi|address)\b"
+    r"conversion|churn|roi bo|ngung mua|luong|salary|lifetime|clv|ltv|email|so dien thoai|phone|dia chi|address)\b"
 )
 TOP = re.compile(
     r"\btop (\d{1,3})\b|\b(\d{1,3}) (san pham|khach hang|cua hang|danh muc|thuong hieu|products|customers|stores|categories|brands|mat hang)\b"

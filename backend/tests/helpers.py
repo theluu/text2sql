@@ -1,3 +1,4 @@
+import json
 from typing import Any
 
 import httpx
@@ -15,6 +16,7 @@ def make_settings(**overrides: Any) -> Settings:
         "warehouse_viewer_password": "viewer-pw",
         "warehouse_analyst_password": "analyst-pw",
         "jwt_secret": "x" * 40,
+        "redis_url": "",
     }
     values.update(overrides)
     return Settings(_env_file=None, **values)
@@ -33,3 +35,12 @@ async def login_token(client: httpx.AsyncClient, email: str) -> str:
     )
     assert response.status_code == 200, response.text
     return str(response.json()["access_token"])
+
+
+def parse_sse(text: str) -> list[tuple[str, dict[str, object]]]:
+    events: list[tuple[str, dict[str, object]]] = []
+    for block in text.strip().split("\n\n"):
+        lines = dict(line.split(": ", 1) for line in block.splitlines() if ": " in line)
+        if "event" in lines:
+            events.append((lines["event"], json.loads(lines["data"])))
+    return events
