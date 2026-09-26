@@ -189,3 +189,13 @@ def _wrap(root: exp.Expression, max_rows: int) -> exp.Expression:
     """UNION/INTERSECT without LIMIT: attach one to the set operation itself."""
     root.set("limit", exp.Limit(expression=exp.Literal.number(max_rows)))
     return root
+
+
+def pretty_sql(sql: str | None) -> str | None:
+    """Multi-line formatting for people; execution keeps the compact form."""
+    if not sql:
+        return sql
+    try:
+        return sqlglot.transpile(sql, read="postgres", write="postgres", pretty=True)[0]
+    except SqlglotError:
+        return sql

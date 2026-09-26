@@ -24,7 +24,11 @@
     }
   },
   "nav": {
-    "ask": "Hỏi dữ liệu"
+    "ask": "Hỏi dữ liệu",
+    "review": "Duyệt câu trả lời",
+    "eval": "Đánh giá",
+    "ops": "Vận hành",
+    "settings": "Cấu hình"
   },
   "shell": {
     "primaryNav": "Điều hướng chính",
@@ -137,5 +141,79 @@
     "agreement": "Đồng thuận {{value}}",
     "similarity": "giống {{value}}",
     "failover": "Đã chuyển sang mô hình dự phòng"
+  },
+  "notifications": {
+    "answered": "Câu hỏi của bạn đã được duyệt",
+    "rejected": "Câu hỏi của bạn bị từ chối",
+    "failed": "Chuyên viên cần bạn làm rõ câu hỏi",
+    "generic": "Có cập nhật cho câu hỏi của bạn",
+    "open": "Mở câu hỏi"
+  },
+  "review": {
+    "title": "Duyệt câu trả lời",
+    "subtitle": "Câu trả lời rủi ro chờ chuyên viên xác nhận trước khi đến tay người hỏi. Ưu tiên = mức rủi ro × thời gian chờ.",
+    "empty": "Không có mục nào cần duyệt.",
+    "filters": {
+      "status": "Trạng thái",
+      "reason": "Lý do",
+      "all": "Tất cả"
+    },
+    "statuses": {
+      "pending": "Đang chờ",
+      "open": "Mới",
+      "claimed": "Đang xử lý",
+      "approved": "Đã duyệt",
+      "edited": "Đã sửa",
+      "rejected": "Đã từ chối",
+      "returned": "Trả lại",
+      "all": "Tất cả"
+    },
+    "columns": {
+      "priority": "Ưu tiên",
+      "question": "Câu hỏi",
+      "asker": "Người hỏi",
+      "reasons": "Lý do",
+      "status": "Trạng thái",
+      "age": "Chờ",
+      "assignee": "Người xử lý"
+    },
+    "back": "Hàng đợi",
+    "context": "Ngữ cảnh",
+    "askedBy": "{{name}} ({{role}}) hỏi",
+    "judgeIssues": "Nhận xét của AI kiểm định",
+    "originalPreview": "Kết quả của SQL gốc",
+    "editor": "SQL — gốc bên trái, bản sửa bên phải",
+    "dryRun": "Chạy thử",
+    "dryRunHint": "Chạy với quyền của người hỏi, qua đủ kiểm tra L3–L5.",
+    "dryRunOk": "Chạy thử được {{count}} dòng",
+    "approve": "Duyệt",
+    "edit": "Sửa và duyệt",
+    "reject": "Từ chối",
+    "return": "Trả lại hỏi thêm",
+    "note": "Ghi chú cho người hỏi",
+    "notePlaceholder": "Bắt buộc khi từ chối hoặc trả lại",
+    "golden": "Thêm vào bộ đánh giá (golden set)",
+    "shortcuts": "Phím tắt: A duyệt · E sửa và duyệt · R từ chối",
+    "resolved": "Đã xử lý: {{status}}",
+    "noteRequired": "Hãy ghi lý do để người hỏi hiểu.",
+    "errors": {
+      "already_resolved": "Mục này đã được xử lý.",
+      "claimed_by_other": "Mục này đang do người khác xử lý.",
+      "dry_run_failed": "SQL chưa chạy được: {{message}}",
+      "generic": "Không thực hiện được. Thử lại.",
+      "load": "Không tải được mục này."
+    }
+  },
+  "reasons": {
+    "PII_ACCESS": "Dữ liệu cá nhân",
+    "JUDGE_FAIL": "Judge: sai",
+    "JUDGE_UNCERTAIN": "Judge: chưa chắc",
+    "LOW_CONFIDENCE": "Tin cậy thấp",
+    "FALLBACK_LOW_CONFIDENCE": "Dự phòng chưa chắc",
+    "COST_GRAY": "Truy vấn nặng",
+    "USER_DOWNVOTE": "Người dùng báo sai"
+  },
+  "common": {
+    "retry": "Thử lại"
   }
 }

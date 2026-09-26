@@ -1,7 +1,9 @@
 import { createRootRoute, createRoute, createRouter, Outlet, redirect, type RouterHistory } from '@tanstack/react-router'
 import { AskPage } from '@/features/ask/AskPage'
 import { LoginPage } from '@/features/auth/LoginPage'
-import { useAuth } from '@/features/auth/store'
+import { hasRole, type Role, useAuth } from '@/features/auth/store'
+import { ReviewDetailPage } from '@/features/review/ReviewDetailPage'
+import { ReviewQueuePage } from '@/features/review/ReviewQueuePage'
 import { AppShell } from './AppShell'
 
 /** Only same-origin absolute paths are allowed as post-login destinations. */
@@ -37,7 +39,30 @@ const appRoute = createRoute({
 const askRoute = createRoute({ getParentRoute: () => appRoute, path: '/', component: AskPage })
 const conversationRoute = createRoute({ getParentRoute: () => appRoute, path: '/c/$conversationId', component: AskPage })
 
-const routeTree = rootRoute.addChildren([loginRoute, appRoute.addChildren([askRoute, conversationRoute])])
+/** Pages below a role send the user home instead of rendering a 403. */
+function requireRole(minimum: Role) {
+  return () => {
+    if (!hasRole(useAuth.getState().user, minimum)) throw redirect({ to: '/' })
+  }
+}
+
+const reviewRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/review',
+  beforeLoad: requireRole('analyst'),
+  component: ReviewQueuePage,
+})
+const reviewDetailRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/review/$itemId',
+  beforeLoad: requireRole('analyst'),
+  component: ReviewDetailPage,
+})
+
+const routeTree = rootRoute.addChildren([
+  loginRoute,
+  appRoute.addChildren([askRoute, conversationRoute, reviewRoute, reviewDetailRoute]),
+])
 
 export function createAppRouter(history?: RouterHistory) {
   return createRouter({ routeTree, history, defaultPreload: 'intent' })

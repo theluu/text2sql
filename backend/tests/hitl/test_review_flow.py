@@ -56,7 +56,7 @@ async def test_queue_detail_shows_reviewer_the_preview(make_client: Any) -> None
         )
     ).json()
     assert detail["run"]["result"]["rows"]  # the reviewer sees what the viewer does not
-    assert detail["original_sql"].startswith("SELECT full_name, email")
+    assert " ".join(detail["original_sql"].split()).startswith("SELECT full_name, email")
 
 
 async def test_approve_reexecutes_as_the_asker_and_notifies(

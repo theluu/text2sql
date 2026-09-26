@@ -19,6 +19,7 @@ from app.models import (
 from app.pipeline.context import PipelineContext
 from app.pipeline.messages import message, reason_label
 from app.pipeline.prompts import PROMPT_VERSION
+from app.pipeline.sql_guard import pretty_sql
 
 HIDE_PREVIEW_REASONS = frozenset({"PII_ACCESS", "COST_GRAY"})
 DRAFT_PREVIEW_ROWS = 20
@@ -157,7 +158,7 @@ def run_view(
         "status": run.status,
         "decision": run.risk_decision,
         "reasons": [{"code": r, "label": reason_label(r, lang)} for r in reasons],
-        "sql": run.final_sql if (run.status != "rejected" or for_reviewer) else None,
+        "sql": pretty_sql(run.final_sql) if (run.status != "rejected" or for_reviewer) else None,
         "explanation": run.explanation,
         "summary": run.summary if result is not None else None,
         "chart": run.chart_spec if result is not None else None,

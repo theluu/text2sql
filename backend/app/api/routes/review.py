@@ -10,6 +10,7 @@ from app.core.db import get_session
 from app.hitl import review_service
 from app.hitl.review_service import ReviewError
 from app.models import Role, User
+from app.pipeline.sql_guard import pretty_sql
 from app.services.deps import ServicesDep
 from app.services.runs import load_view
 
@@ -79,8 +80,8 @@ async def detail(item_id: uuid.UUID, _: Reviewer, session: Session) -> dict[str,
         "id": str(item.id),
         "status": item.status,
         "reasons": item.reasons,
-        "original_sql": item.original_sql,
-        "final_sql": item.final_sql,
+        "original_sql": pretty_sql(item.original_sql),
+        "final_sql": pretty_sql(item.final_sql),
         "note": item.reviewer_note,
         "add_to_golden": item.add_to_golden,
         "assignee_id": str(item.assignee_id) if item.assignee_id else None,

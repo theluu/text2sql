@@ -28,17 +28,22 @@ export function parseSseChunk(buffer: string): { events: SseEvent[]; rest: strin
 }
 
 /** POST that streams server-sent events (EventSource cannot send a body or auth header). */
-export async function postStream(
+export function postStream(path: string, body: unknown, onEvent: (event: SseEvent) => void, signal?: AbortSignal) {
+  return streamSse(path, { method: 'POST', body: JSON.stringify(body) }, onEvent, signal)
+}
+
+export async function streamSse(
   path: string,
-  body: unknown,
+  init: { method: 'GET' | 'POST'; body?: string },
   onEvent: (event: SseEvent) => void,
   signal?: AbortSignal,
 ): Promise<void> {
   const config = getApiConfig()
-  const headers = new Headers({ 'Content-Type': 'application/json', Accept: 'text/event-stream' })
+  const headers = new Headers({ Accept: 'text/event-stream' })
+  if (init.body) headers.set('Content-Type', 'application/json')
   const token = config.getToken()
   if (token) headers.set('Authorization', `Bearer ${token}`)
-  const response = await fetch(`/api${path}`, { method: 'POST', headers, body: JSON.stringify(body), signal })
+  const response = await fetch(`/api${path}`, { ...init, headers, signal })
   if (!response.ok || !response.body) {
     let code = `http_${response.status}`
     try {

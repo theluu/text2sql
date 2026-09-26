@@ -24,7 +24,11 @@
     }
   },
   "nav": {
-    "ask": "Ask data"
+    "ask": "Ask data",
+    "review": "Review queue",
+    "eval": "Evaluation",
+    "ops": "Operations",
+    "settings": "Settings"
   },
   "shell": {
     "primaryNav": "Primary navigation",
@@ -137,5 +141,79 @@
     "agreement": "Agreement {{value}}",
     "similarity": "{{value}} similar",
     "failover": "Failed over to a backup model"
+  },
+  "notifications": {
+    "answered": "Your question was approved",
+    "rejected": "Your question was rejected",
+    "failed": "An analyst needs you to clarify",
+    "generic": "Your question has an update",
+    "open": "Open question"
+  },
+  "review": {
+    "title": "Review queue",
+    "subtitle": "Risky answers wait here for an analyst before they reach the asker. Priority = risk × time waiting.",
+    "empty": "Nothing needs review.",
+    "filters": {
+      "status": "Status",
+      "reason": "Reason",
+      "all": "All"
+    },
+    "statuses": {
+      "pending": "Waiting",
+      "open": "New",
+      "claimed": "In progress",
+      "approved": "Approved",
+      "edited": "Edited",
+      "rejected": "Rejected",
+      "returned": "Returned",
+      "all": "All"
+    },
+    "columns": {
+      "priority": "Priority",
+      "question": "Question",
+      "asker": "Asked by",
+      "reasons": "Reasons",
+      "status": "Status",
+      "age": "Waiting",
+      "assignee": "Assignee"
+    },
+    "back": "Queue",
+    "context": "Context",
+    "askedBy": "Asked by {{name}} ({{role}})",
+    "judgeIssues": "AI judge notes",
+    "originalPreview": "Result of the original SQL",
+    "editor": "SQL — original on the left, your edit on the right",
+    "dryRun": "Dry run",
+    "dryRunHint": "Runs with the asker's permissions, through checks L3–L5.",
+    "dryRunOk": "Dry run returned {{count}} rows",
+    "approve": "Approve",
+    "edit": "Edit and approve",
+    "reject": "Reject",
+    "return": "Return for clarification",
+    "note": "Note to the asker",
+    "notePlaceholder": "Required to reject or return",
+    "golden": "Add to the evaluation golden set",
+    "shortcuts": "Shortcuts: A approve · E edit and approve · R reject",
+    "resolved": "Resolved: {{status}}",
+    "noteRequired": "Add a reason so the asker understands.",
+    "errors": {
+      "already_resolved": "This item was already resolved.",
+      "claimed_by_other": "Someone else is handling this item.",
+      "dry_run_failed": "The SQL did not run: {{message}}",
+      "generic": "That did not work. Try again.",
+      "load": "Could not load this item."
+    }
+  },
+  "reasons": {
+    "PII_ACCESS": "Personal data",
+    "JUDGE_FAIL": "Judge: fail",
+    "JUDGE_UNCERTAIN": "Judge: unsure",
+    "LOW_CONFIDENCE": "Low confidence",
+    "FALLBACK_LOW_CONFIDENCE": "Unsure fallback",
+    "COST_GRAY": "Expensive query",
+    "USER_DOWNVOTE": "User downvote"
+  },
+  "common": {
+    "retry": "Retry"
   }
 }

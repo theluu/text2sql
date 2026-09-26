@@ -1,17 +1,28 @@
-import { Link, Outlet, useRouter } from '@tanstack/react-router'
+import { Link, Outlet, useRouter, useRouterState } from '@tanstack/react-router'
 import { LogOut } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { BrandMark } from '@/components/BrandMark'
 import { LangToggle } from '@/components/LangToggle'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { Toasts } from '@/components/Toasts'
 import { hasRole, useAuth } from '@/features/auth/store'
+import { usePendingCount } from '@/features/review/api'
+import { useNotifications } from '@/lib/notifications'
 import { NAV_ITEMS } from './nav'
+
+/** "Ask" owns / and /c/…; every other item owns its own prefix. */
+function isActive(to: string, pathname: string): boolean {
+  return to === '/' ? pathname === '/' || pathname.startsWith('/c/') : pathname.startsWith(to)
+}
 
 export function AppShell() {
   const { t } = useTranslation()
   const router = useRouter()
+  const pathname = useRouterState({ select: (state) => state.location.pathname })
   const user = useAuth((s) => s.user)
   const logout = useAuth((s) => s.logout)
+  const pending = usePendingCount(hasRole(user, 'analyst'))
+  useNotifications()
 
   return (
     <div className="grid min-h-screen grid-cols-1 bg-paper text-ink lg:grid-cols-[240px_1fr]">
@@ -24,12 +35,16 @@ export function AppShell() {
             <Link
               key={item.to}
               to={item.to}
-              activeOptions={{ exact: item.exact ?? false }}
-              className="flex items-center gap-2.5 rounded-[4px] px-2.5 py-2 text-sm text-ink-2 hover:bg-surface-2 hover:text-ink"
-              activeProps={{ className: 'bg-surface-2 text-ink font-medium' }}
+              aria-current={isActive(item.to, pathname) ? 'page' : undefined}
+              className={`flex items-center gap-2.5 rounded-[4px] px-2.5 py-2 text-sm hover:bg-surface-2 hover:text-ink ${
+                isActive(item.to, pathname) ? 'bg-surface-2 font-medium text-ink' : 'text-ink-2'
+              }`}
             >
               <item.icon size={16} aria-hidden />
-              {t(item.labelKey)}
+              <span className="flex-1">{t(item.labelKey)}</span>
+              {item.badge === 'review' && (pending.data?.pending ?? 0) > 0 && (
+                <span className="rounded-[3px] bg-warn/15 px-1.5 font-mono text-[11px] text-warn">{pending.data?.pending}</span>
+              )}
             </Link>
           ))}
         </nav>
@@ -64,6 +79,7 @@ export function AppShell() {
         <main className="min-w-0 flex-1">
           <Outlet />
         </main>
+        <Toasts />
       </div>
     </div>
   )
