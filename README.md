@@ -30,6 +30,8 @@ GEMINI_API_KEY=...
 OLLAMA_BASE_URL=                 # tuỳ chọn: http://ollama:11434 với --profile local-llm
 ```
 
+OpenAI đứng đầu chuỗi mặc định (đổi trên trang **Cấu hình**). Model mặc định `gpt-5-mini` (`OPENAI_MODEL`) chạy với `reasoning_effort=low` khi sinh SQL và `minimal` cho judge/phân loại (`OPENAI_REASONING_EFFORT`). Vì model reasoning chậm, mỗi lần gọi được chờ tối đa 30 giây và cả chuỗi 45 giây (`LLM_CALL_TIMEOUT_S`, `LLM_BUDGET_S`), thay cho budget 20 giây trong spec.
+
 Sau đó chạy `docker compose up -d api worker`. `GET /api/health` cho biết provider nào đã được cấu hình và trạng thái circuit của từng provider.
 
 ## Kiến trúc

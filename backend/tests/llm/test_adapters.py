@@ -144,3 +144,22 @@ async def test_anthropic_errors_are_classified(status: int, kind: str) -> None:
     with pytest.raises(ProviderError) as caught:
         await provider.complete(MESSAGES, schema=SCHEMA, schema_name="gen", timeout_s=5)
     assert caught.value.kind == kind
+
+
+@pytest.mark.parametrize(
+    ("model", "schema_name", "expected"),
+    [
+        ("gpt-5-mini", "sql_candidate", "low"),
+        ("gpt-5-mini", "judge_verdict", "minimal"),
+        ("o4-mini", "question_screen", "minimal"),
+        ("gpt-4.1", "sql_candidate", None),  # non-reasoning models reject the parameter
+    ],
+)
+async def test_openai_reasoning_effort_per_call(
+    model: str, schema_name: str, expected: str | None
+) -> None:
+    seen: list[httpx.Request] = []
+    body = {"choices": [{"message": {"content": json.dumps(ANSWER)}}], "usage": {}}
+    provider = OpenAIProvider("k", model, reasoning_effort="low", client=_mock(200, body, seen))
+    await provider.complete(MESSAGES, schema=SCHEMA, schema_name=schema_name, timeout_s=5)
+    assert json.loads(seen[0].content).get("reasoning_effort") == expected

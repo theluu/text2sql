@@ -37,12 +37,19 @@ class Settings(BaseSettings):
     anthropic_model: str = "claude-sonnet-5"
     openai_api_key: SecretStr | None = None
     openai_model: str = "gpt-5-mini"
+    # Reasoning models (gpt-5*, o*): effort for SQL generation; judge/classify/rewrite use "minimal".
+    openai_reasoning_effort: str = "low"
     openai_embedding_model: str = "text-embedding-3-small"
     gemini_api_key: SecretStr | None = None
     gemini_model: str = "gemini-2.5-flash"
     ollama_base_url: str | None = None
     ollama_model: str = "qwen2.5-coder:7b"
     ollama_embedding_model: str = "bge-m3"
+
+    # Router timing. The spec's 20 s budget is too tight for reasoning models such as
+    # gpt-5-mini (≈12-20 s per SQL generation), so both are configurable.
+    llm_call_timeout_s: float = 30.0
+    llm_budget_s: float = 45.0
 
     @field_validator("anthropic_api_key", "openai_api_key", "gemini_api_key", mode="before")
     @classmethod

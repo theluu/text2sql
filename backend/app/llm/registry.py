@@ -11,7 +11,7 @@ from app.llm.ollama import OllamaProvider
 from app.llm.openai import OpenAIProvider
 from app.llm.router import LLMRouter
 
-KNOWN_PROVIDERS = ("anthropic", "openai", "gemini", "ollama")
+KNOWN_PROVIDERS = ("openai", "anthropic", "gemini", "ollama")
 DEFAULT_CHAIN = [*KNOWN_PROVIDERS, "rule_based"]
 
 
@@ -24,7 +24,9 @@ def build_providers(settings: Settings) -> dict[str, LLMProvider]:
         )
     if settings.openai_api_key:
         providers["openai"] = OpenAIProvider(
-            settings.openai_api_key.get_secret_value(), settings.openai_model
+            settings.openai_api_key.get_secret_value(),
+            settings.openai_model,
+            reasoning_effort=settings.openai_reasoning_effort or None,
         )
     if settings.gemini_api_key:
         providers["gemini"] = GeminiProvider(
@@ -40,6 +42,15 @@ def build_router(
     breaker: CircuitBreaker,
     chain: list[str],
     chaos: dict[str, Any],
+    *,
+    call_timeout_s: float = 30.0,
+    budget_s: float = 45.0,
 ) -> LLMRouter:
     ordered = [providers[name] for name in chain if name in providers]
-    return LLMRouter(ordered, breaker, chaos=set(chaos.get("disabled_providers", [])))
+    return LLMRouter(
+        ordered,
+        breaker,
+        chaos=set(chaos.get("disabled_providers", [])),
+        call_timeout_s=call_timeout_s,
+        budget_s=budget_s,
+    )

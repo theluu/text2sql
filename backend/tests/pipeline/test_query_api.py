@@ -15,9 +15,9 @@ pytestmark = pytest.mark.usefixtures("clean_app_db")
 async def test_happy_path_streams_steps_and_auto_executes(
     make_client: Any, pg_settings: Settings
 ) -> None:
-    gen = llm("anthropic", "anthropic", sql_answer(REVENUE_2025))
-    judge = llm("openai", "openai", sql_answer("SELECT 1"))
-    client = await make_client({"anthropic": gen, "openai": judge})
+    gen = llm("openai", "openai", sql_answer(REVENUE_2025))
+    judge = llm("anthropic", "anthropic", sql_answer("SELECT 1"))
+    client = await make_client({"openai": gen, "anthropic": judge})
     events, view = await ask(client, "analyst@demo.vn", "Doanh thu năm 2025 là bao nhiêu?")
 
     assert events[0][0] == "meta"
@@ -25,8 +25,8 @@ async def test_happy_path_streams_steps_and_auto_executes(
     assert finished == ["input_guard", "rewrite", "cache", "link", "fewshot", "generate", "validate",
                         "cost", "execute", "judge", "consistency", "risk", "output"]  # fmt: skip
     assert view["status"] == "answered" and view["decision"] == "AUTO_EXECUTE"
-    assert view["provider"] == "anthropic" and not view["used_fallback"]
-    assert view["judge"]["verdict"] == "pass" and view["judge"]["model"].startswith("openai")
+    assert view["provider"] == "openai" and not view["used_fallback"]
+    assert view["judge"]["verdict"] == "pass" and view["judge"]["model"].startswith("anthropic")
     assert view["result"]["columns"] == ["doanh_thu"] and view["result"]["rows"][0][0] > 0
     assert view["chart"] == {"type": "kpi", "value": "doanh_thu"}
     assert view["confidence"] >= 0.9
@@ -148,19 +148,19 @@ async def test_chaos_fails_over_to_the_next_provider(
 ) -> None:
     with psycopg.connect(sync_dsn(pg_settings.app_db_url), autocommit=True) as conn:
         conn.execute(
-            """INSERT INTO app_settings (key, value) VALUES ('chaos', '{"disabled_providers": ["anthropic"]}')"""
+            """INSERT INTO app_settings (key, value) VALUES ('chaos', '{"disabled_providers": ["openai"]}')"""
         )
-    claude = llm("anthropic", "anthropic", sql_answer(REVENUE_2025))
     gpt = llm("openai", "openai", sql_answer(REVENUE_2025))
-    client = await make_client({"anthropic": claude, "openai": gpt})
+    claude = llm("anthropic", "anthropic", sql_answer(REVENUE_2025))
+    client = await make_client({"openai": gpt, "anthropic": claude})
     events, view = await ask(client, "analyst@demo.vn", "doanh thu năm 2025")
-    assert view["provider"] == "openai" and view["status"] == "answered"
+    assert view["provider"] == "anthropic" and view["status"] == "answered"
     generate = next(
         d for n, d in events if n == "step" and d["step"] == "generate" and d["status"] != "start"
     )
     assert generate["detail"]["failover"] is True
     assert [a["outcome"] for a in generate["detail"]["attempts"]] == ["chaos", "ok"]
-    assert claude.calls == []
+    assert gpt.calls == []
 
 
 async def test_second_identical_question_hits_the_cache(make_client: Any) -> None:

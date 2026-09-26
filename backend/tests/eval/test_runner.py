@@ -45,18 +45,18 @@ async def test_rule_based_smoke_run_scores_and_blocks_attacks(
 async def test_chain_mode_with_fake_llm_and_compare(
     make_client: Any, pg_settings: Settings
 ) -> None:
-    gen = llm("anthropic", "anthropic", sql_answer(REVENUE_2025))
+    gen = llm("openai", "openai", sql_answer(REVENUE_2025))
     client = await make_client(
-        {"anthropic": gen, "openai": llm("openai", "openai", sql_answer("SELECT 1"))}
+        {"openai": gen, "anthropic": llm("anthropic", "anthropic", sql_answer("SELECT 1"))}
     )
     from app.cli import _seed_app_data
 
     await _seed_app_data(pg_settings)
     first = await run_smoke(client, "chain")
     assert first["summary"]["cases"] == 30
-    assert first["model_chain"][:2] == ["anthropic:fake-1", "openai:fake-1"]
+    assert first["model_chain"][:2] == ["openai:fake-1", "anthropic:fake-1"]
     e01 = next(r for r in first["results"] if r["key"] == "e01")
-    assert e01["ex"] is True and e01["provider"] == "anthropic"
+    assert e01["ex"] is True and e01["provider"] == "openai"
     second = await run_smoke(client, "rule_based")
     headers = {"Authorization": f"Bearer {await login_token(client, 'analyst@demo.vn')}"}
     comparison = (

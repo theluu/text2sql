@@ -154,12 +154,12 @@ async def test_disagreement_with_the_judge_is_recorded(
     def judge_uncertain(question: str, prompt: str) -> dict[str, Any]:
         return {"sql": REVENUE_2025, "explanation": "x", "self_confidence": 0.9}
 
-    gen = llm("anthropic", "anthropic", judge_uncertain)
-    judge = llm("openai", "openai", judge_uncertain)
+    gen = llm("openai", "openai", judge_uncertain)
+    judge = llm("anthropic", "anthropic", judge_uncertain)
     judge.script = [
         lambda m, s: UNCERTAIN if s == "judge_verdict" else {"category": "in_scope", "reason": ""}
     ]
-    client = await make_client({"anthropic": gen, "openai": judge})
+    client = await make_client({"openai": gen, "anthropic": judge})
     _, view = await ask(client, "analyst@demo.vn", "doanh thu năm 2025")
     assert view["status"] == "pending_review"
     # A 0.5 judge score also pulls the blended confidence under 0.7.

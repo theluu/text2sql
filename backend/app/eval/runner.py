@@ -85,7 +85,10 @@ async def execute_run(
         )
         only = run.mode.split("=", 1)[1] if run.mode.startswith("provider=") else None
         chain = [only] if only else app_settings["llm_chain"]
-        router = build_router(providers, services.breaker, chain, app_settings["chaos"])
+        router = build_router(
+            providers, services.breaker, chain, app_settings["chaos"],
+            call_timeout_s=services.settings.llm_call_timeout_s, budget_s=services.settings.llm_budget_s,
+        )  # fmt: skip
         run.model_chain = [f"{p.name}:{p.model}" for p in router.providers] + (
             [] if only else ["rule_based"]
         )
