@@ -63,3 +63,10 @@ def seeded_warehouse(pg_settings: Settings, warehouse_schema: None) -> dict[str,
     from app.warehouse.bootstrap import bootstrap_warehouse
 
     return bootstrap_warehouse(pg_settings, scale=pg_settings.warehouse_seed_scale)
+
+
+@pytest.fixture(scope="session")
+def migrated_app_db(pg_settings: Settings) -> None:
+    from app.db.migrate import upgrade_head
+
+    upgrade_head(pg_settings.app_db_url)

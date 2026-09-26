@@ -16,3 +16,7 @@ def make_settings(**overrides: Any) -> Settings:
     }
     values.update(overrides)
     return Settings(_env_file=None, **values)
+
+
+def sync_dsn(url: str) -> str:
+    return url.replace("postgresql+asyncpg://", "postgresql://")
