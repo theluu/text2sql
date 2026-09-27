@@ -139,3 +139,11 @@ def test_id_columns_are_labels_not_measures() -> None:
     result = _result(["store_id", "store_name", "revenue"], ["number", "text", "number"], rows)
     assert chart_spec(result)["y"] == ["revenue"]
     assert "revenue cao nhất: Datum Biên Hòa 30 (900)" in summarize(result, "vi")
+
+
+def test_a_list_of_ids_and_names_has_no_measure_to_chart() -> None:
+    result = _result(
+        ["store_id", "name"], ["number", "text"], [[30, "Datum Biên Hòa 30"], [1, "Datum Online"]]
+    )
+    assert chart_spec(result) == {"type": "table"}
+    assert summarize(result, "vi") == "2 dòng."

@@ -67,8 +67,7 @@ ID_COLUMN = re.compile(r"(^|_)(id|ma|code|sku)$", re.I)
 def _numeric_columns(result: QueryResult) -> list[int]:
     """Measure columns: numeric and not an identifier (store_id is a label, not a quantity)."""
     numeric = [i for i, kind in enumerate(result.column_types) if kind == "number"]
-    measures = [i for i in numeric if not ID_COLUMN.search(result.columns[i])]
-    return measures or numeric
+    return [i for i in numeric if not ID_COLUMN.search(result.columns[i])]
 
 
 def _label_columns(result: QueryResult, measures: list[int]) -> list[int]:
