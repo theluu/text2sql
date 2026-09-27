@@ -1,0 +1,21 @@
+[Unit]
+Description=Datum Text2SQL API (FastAPI)
+After=network.target postgresql.service redis-server.service
+Wants=postgresql.service redis-server.service
+
+[Service]
+User=text2sql
+Group=text2sql
+WorkingDirectory=/opt/text2sql/app/backend
+Environment=GIT_SHA=%GIT_SHA%
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/text2sql/app/backend/.venv/bin/uvicorn app.main:create_app --factory --host 127.0.0.1 --port 8021 --workers 1 --proxy-headers --forwarded-allow-ips 127.0.0.1
+Restart=always
+RestartSec=3
+MemoryMax=800M
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+
+[Install]
+WantedBy=multi-user.target

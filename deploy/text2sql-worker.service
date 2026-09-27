@@ -1,0 +1,20 @@
+[Unit]
+Description=Datum Text2SQL eval worker (arq)
+After=network.target postgresql.service redis-server.service text2sql-api.service
+
+[Service]
+User=text2sql
+Group=text2sql
+WorkingDirectory=/opt/text2sql/app/backend
+Environment=GIT_SHA=%GIT_SHA%
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/text2sql/app/backend/.venv/bin/arq app.worker.WorkerSettings
+Restart=always
+RestartSec=5
+MemoryMax=600M
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+
+[Install]
+WantedBy=multi-user.target

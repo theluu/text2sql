@@ -132,3 +132,10 @@ def test_long_format_gets_one_series_per_category() -> None:
     assert "series" not in chart_spec(
         _result(["month", "store", "revenue"], ["text", "text", "number"], many)
     )
+
+
+def test_id_columns_are_labels_not_measures() -> None:
+    rows = [[30, "Datum Biên Hòa 30", 900], [1, "Datum Online", 500]]
+    result = _result(["store_id", "store_name", "revenue"], ["number", "text", "number"], rows)
+    assert chart_spec(result)["y"] == ["revenue"]
+    assert "revenue cao nhất: Datum Biên Hòa 30 (900)" in summarize(result, "vi")

@@ -61,8 +61,20 @@ def _fmt(value: Any, lang: str) -> str:
     return "—" if value is None else str(value)
 
 
+ID_COLUMN = re.compile(r"(^|_)(id|ma|code|sku)$", re.I)
+
+
 def _numeric_columns(result: QueryResult) -> list[int]:
-    return [i for i, kind in enumerate(result.column_types) if kind == "number"]
+    """Measure columns: numeric and not an identifier (store_id is a label, not a quantity)."""
+    numeric = [i for i, kind in enumerate(result.column_types) if kind == "number"]
+    measures = [i for i in numeric if not ID_COLUMN.search(result.columns[i])]
+    return measures or numeric
+
+
+def _label_columns(result: QueryResult, measures: list[int]) -> list[int]:
+    """Non-measure columns, readable names before identifiers (store_name over store_id)."""
+    others = [i for i in range(len(result.columns)) if i not in measures]
+    return sorted(others, key=lambda i: (bool(ID_COLUMN.search(result.columns[i])), i))
 
 
 def _is_time(result: QueryResult, index: int) -> bool:
@@ -78,7 +90,7 @@ def chart_spec(result: QueryResult) -> dict[str, Any]:
     numeric = _numeric_columns(result)
     if result.row_count == 1 and len(result.columns) == 1 and numeric:
         return {"type": "kpi", "value": result.columns[0]}
-    labels = [i for i in range(len(result.columns)) if i not in numeric]
+    labels = _label_columns(result, numeric)
     if not labels or not numeric:
         return {"type": "table"}
     time_labels = [i for i in labels if _is_time(result, i)]
@@ -130,7 +142,7 @@ def summarize(result: QueryResult, lang: str) -> str:
     rows_text = (f"{result.row_count} dòng" if vi else f"{result.row_count} rows") + (
         (" (đã giới hạn)" if vi else " (truncated)") if result.truncated else ""
     )
-    labels = [i for i in range(len(result.columns)) if i not in numeric]
+    labels = _label_columns(result, numeric)
     time_labels = [i for i in labels if _is_time(result, i)]
     label = time_labels[0] if time_labels else (labels[0] if labels else None)
     metric = next((i for i in numeric if i != label), None)
