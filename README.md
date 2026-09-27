@@ -2,6 +2,8 @@
 
 Trợ lý BI nội bộ cho doanh nghiệp bán lẻ. Người dùng hỏi dữ liệu bằng tiếng Việt hoặc tiếng Anh. Hệ thống sinh SQL, kiểm tra an toàn qua 5 lớp, nhờ một AI khác vendor chấm điểm, và câu nào rủi ro thì chuyên viên dữ liệu duyệt trước khi trả lời.
 
+**Demo:** https://text2sql.themeshub.net · **Tổng quan dự án (PDF):** [Datum_Text2SQL_Overview.pdf](frontend/public/Datum_Text2SQL_Overview.pdf) ([bản trên site](https://text2sql.themeshub.net/Datum_Text2SQL_Overview.pdf))
+
 Thiết kế: [`docs/superpowers/specs/2026-09-26-text2sql-design.md`](docs/superpowers/specs/2026-09-26-text2sql-design.md) · Kế hoạch triển khai: [`docs/superpowers/plans/`](docs/superpowers/plans/)
 
 ## Chạy nhanh

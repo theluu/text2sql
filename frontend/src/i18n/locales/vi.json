@@ -3,7 +3,10 @@
     "name": "Datum",
     "product": "BI Copilot",
     "tagline": "Hỏi dữ liệu bằng ngôn ngữ tự nhiên — có kiểm chứng, có người duyệt.",
-    "pillars": "Mỗi câu trả lời đều qua kiểm tra an toàn và được AI chấm điểm. Câu nào chưa chắc chắn sẽ được chuyên viên dữ liệu duyệt trước khi đến tay bạn."
+    "pillars": "Mỗi câu trả lời đều qua kiểm tra an toàn và được AI chấm điểm. Câu nào chưa chắc chắn sẽ được chuyên viên dữ liệu duyệt trước khi đến tay bạn.",
+    "overview": "Tổng quan dự án (PDF)",
+    "overviewHint": "Bài toán, kiến trúc, an toàn, đánh giá, dữ liệu — 18 trang",
+    "source": "Mã nguồn trên GitHub"
   },
   "auth": {
     "title": "Đăng nhập",

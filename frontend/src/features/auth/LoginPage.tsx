@@ -1,4 +1,5 @@
 import { useRouter, useSearch } from '@tanstack/react-router'
+import { Code2, FileText } from 'lucide-react'
 import { type FormEvent, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { BrandMark } from '@/components/BrandMark'
@@ -14,6 +15,31 @@ const DEMO_ACCOUNTS: { role: Role; email: string }[] = [
   { role: 'admin', email: 'admin@demo.vn' },
 ]
 const DEMO_PASSWORD = 'demo1234'
+export const OVERVIEW_PDF = '/Datum_Text2SQL_Overview.pdf'
+export const SOURCE_URL = 'https://github.com/theluu/text2sql'
+
+function ProjectLinks({ inverted = false }: { inverted?: boolean }) {
+  const { t } = useTranslation()
+  const card = inverted
+    ? 'border-[#2C3037] bg-[#1B1E23]/80 text-[#ECEAE4] hover:border-[#6D8BFF]'
+    : 'border-rule bg-surface text-ink hover:border-accent'
+  const muted = inverted ? 'text-[#A9ADB6]' : 'text-ink-3'
+  return (
+    <div className="flex flex-wrap gap-3">
+      <a href={OVERVIEW_PDF} target="_blank" rel="noopener" className={`group flex items-center gap-3 rounded-[6px] border px-4 py-3 transition-colors ${card}`}>
+        <FileText size={18} aria-hidden className={inverted ? 'text-[#6D8BFF]' : 'text-accent'} />
+        <span>
+          <span className="block text-sm font-medium">{t('brand.overview')}</span>
+          <span className={`block text-xs ${muted}`}>{t('brand.overviewHint')}</span>
+        </span>
+      </a>
+      <a href={SOURCE_URL} target="_blank" rel="noopener" className={`flex items-center gap-2 rounded-[6px] border px-4 py-3 text-sm transition-colors ${card}`}>
+        <Code2 size={16} aria-hidden className={muted} />
+        {t('brand.source')}
+      </a>
+    </div>
+  )
+}
 
 export function LoginPage() {
   const { t } = useTranslation()
@@ -65,7 +91,10 @@ export function LoginPage() {
             <LedgerPreview />
           </div>
         </div>
-        <p className="relative max-w-md text-sm leading-relaxed text-[#A9ADB6]">{t('brand.pillars')}</p>
+        <div className="relative space-y-5">
+          <p className="max-w-md text-sm leading-relaxed text-[#A9ADB6]">{t('brand.pillars')}</p>
+          <ProjectLinks inverted />
+        </div>
       </aside>
 
       <main className="flex flex-col px-6 py-6 sm:px-12">
@@ -146,6 +175,10 @@ export function LoginPage() {
                 </li>
               ))}
             </ul>
+          </section>
+
+          <section className="mt-8 lg:hidden">
+            <ProjectLinks />
           </section>
         </div>
       </main>

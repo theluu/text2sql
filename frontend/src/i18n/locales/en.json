@@ -3,7 +3,10 @@
     "name": "Datum",
     "product": "BI Copilot",
     "tagline": "Ask your data in plain language — verified, with a human in the loop.",
-    "pillars": "Every answer passes safety checks and is scored by an AI judge. Anything uncertain is reviewed by a data analyst before it reaches you."
+    "pillars": "Every answer passes safety checks and is scored by an AI judge. Anything uncertain is reviewed by a data analyst before it reaches you.",
+    "overview": "Project overview (PDF)",
+    "overviewHint": "Problem, architecture, safety, evaluation, data — 18 pages",
+    "source": "Source code on GitHub"
   },
   "auth": {
     "title": "Sign in",
