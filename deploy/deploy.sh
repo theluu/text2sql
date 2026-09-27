@@ -9,15 +9,18 @@ ROOT=$(git rev-parse --show-toplevel)
 SHA=$(git rev-parse HEAD)
 TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT
+# One multiplexed SSH connection for scp + ssh: the server rate-limits new connections.
+mkdir -p "$HOME/.ssh/cm"
+SSH_OPTS=(-o ControlMaster=auto -o "ControlPath=$HOME/.ssh/cm/%r@%h:%p" -o ControlPersist=10m -o ConnectTimeout=20)
 
 cd "$ROOT"
 [ -z "$(git status --porcelain -- backend frontend)" ] || { echo "backend/ or frontend/ has uncommitted changes" >&2; exit 1; }
 (cd frontend && npm run build >/dev/null)
 git archive --format=tar.gz -o "$TMP/backend.tar.gz" HEAD backend
 tar -czf "$TMP/web.tar.gz" -C frontend/dist .
-scp -q "$TMP/backend.tar.gz" "$TMP/web.tar.gz" "$HOST:/tmp/"
+scp -q "${SSH_OPTS[@]}" "$TMP/backend.tar.gz" "$TMP/web.tar.gz" "$HOST:/tmp/"
 
-ssh "$HOST" bash -s -- "$SHA" <<'REMOTE'
+ssh "${SSH_OPTS[@]}" "$HOST" bash -s -- "$SHA" <<'REMOTE'
 set -euo pipefail
 SHA=$1
 APP=/opt/text2sql/app
