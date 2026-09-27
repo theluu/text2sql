@@ -21,7 +21,7 @@ deploy/deploy.sh        # builds the frontend, ships HEAD, migrates, restarts, h
 ## First-time setup (already done; kept for rebuilding the server)
 
 1. `useradd --system --home-dir /opt/text2sql --shell /usr/sbin/nologin text2sql`. Then install `uv` to `/usr/local/bin`.
-2. As `postgres`: `CREATE ROLE t2s_admin LOGIN CREATEROLE PASSWORD '…'`, then create `t2s_app` and `t2s_warehouse` owned by it. Also run `CREATE EXTENSION vector` in `t2s_app`.
+2. As `postgres`: `CREATE ROLE t2s_admin LOGIN CREATEROLE PASSWORD '…'`, then create `t2s_app` and `t2s_warehouse` owned by it. Also run `CREATE EXTENSION vector` in `t2s_app`, and `ALTER SCHEMA public OWNER TO t2s_admin` in `t2s_warehouse`. On Postgres 14 the admin role would otherwise lose `CREATE` once the grants file revokes it from `PUBLIC`.
 3. Add these lines at the **top** of `pg_hba.conf`, so the read-only warehouse roles can reach nothing but their own database. Then reload.
    ```
    host  t2s_warehouse  wh_viewer,wh_analyst  127.0.0.1/32  scram-sha-256
