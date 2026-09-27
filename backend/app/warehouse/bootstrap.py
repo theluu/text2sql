@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Any
 
 import psycopg
+import structlog
 from psycopg import sql
 
 from app.core.config import Settings
@@ -39,6 +40,11 @@ def apply_schema(conn: psycopg.Connection[Any], settings: Settings) -> None:
     _run_file(conn, "02_views.sql")
     ensure_roles(conn, settings)
     _run_file(conn, "03_grants.sql")
+    try:
+        _run_file(conn, "04_hardening.sql")
+    except psycopg.errors.InsufficientPrivilege:
+        # Non-superuser admin (shared servers): a superuser must apply this file separately.
+        structlog.get_logger().warning("warehouse.hardening_skipped", file="04_hardening.sql")
 
 
 def table_counts(conn: psycopg.Connection[Any]) -> dict[str, int]:

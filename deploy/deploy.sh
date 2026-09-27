@@ -30,9 +30,9 @@ tar -xzf /tmp/backend.tar.gz -C "$APP" && chown -R text2sql:text2sql "$APP"
 cd "$APP/backend"
 sudo -u text2sql -H env UV_PYTHON_INSTALL_DIR=/opt/text2sql/.python UV_CACHE_DIR=/opt/text2sql/.cache/uv \
   uv sync --frozen --no-dev --python 3.12 -q
-sudo -u text2sql .venv/bin/python -m app.cli bootstrap >/dev/null   # idempotent: migrations + eval cases
+sudo -u text2sql .venv/bin/python -m app.cli bootstrap 2>&1 | grep -iE "error|hardening_skipped" || true   # idempotent: migrations + eval cases
 # Function-level revokes need the superuser (t2s_admin is not one).
-(cd /tmp && sudo -u postgres psql -q -d t2s_warehouse < "$APP/backend/app/warehouse/schema/03_grants.sql")
+(cd /tmp && sudo -u postgres psql -q -v ON_ERROR_STOP=1 -d t2s_warehouse < "$APP/backend/app/warehouse/schema/04_hardening.sql")
 sed -i "s/^Environment=GIT_SHA=.*/Environment=GIT_SHA=$SHA/" /etc/systemd/system/text2sql-api.service /etc/systemd/system/text2sql-worker.service
 systemctl daemon-reload
 systemctl restart text2sql-api text2sql-worker

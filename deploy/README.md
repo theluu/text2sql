@@ -30,7 +30,7 @@ deploy/deploy.sh        # builds the frontend, ships HEAD, migrates, restarts, h
    ```
 4. Write `/opt/text2sql/app/backend/.env` with random passwords and `JWT_SECRET` (`openssl rand -hex …`). Use the keys from `.env.example` and point `APP_DB_URL` and `WAREHOUSE_*` at `127.0.0.1`. Also set `REDIS_URL=redis://127.0.0.1:6379/5` and `ENV=prod`, and add the LLM API keys.
 5. `uv sync --frozen --no-dev --python 3.12`, then run `python -m app.cli bootstrap` as `text2sql`.
-6. Re-apply `app/warehouse/schema/03_grants.sql` **as `postgres`** (pipe it via stdin). Revoking `set_config`/`pg_sleep` needs the superuser.
+6. Apply `app/warehouse/schema/04_hardening.sql` **as `postgres`** (pipe it via stdin). Revoking `set_config`/`pg_sleep` needs the superuser; bootstrap skips it with a warning otherwise.
 7. Install the two unit files and enable them.
 8. Install the HTTP half of the vhost and run `certbot certonly --webroot -w /var/www/text2sql.themeshub.net/public -d text2sql.themeshub.net`. Then add the HTTPS block and reload nginx, after `nginx -t` passes.
 

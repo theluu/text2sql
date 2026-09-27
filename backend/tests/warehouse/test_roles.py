@@ -127,3 +127,32 @@ def test_apply_schema_is_idempotent(pg_settings: Settings, wh_admin: psycopg.Con
 
     apply_schema(wh_admin, pg_settings)
     apply_schema(wh_admin, pg_settings)
+
+
+def test_hardening_is_skipped_not_fatal_for_non_superuser_admin(
+    pg_settings: Settings, wh_admin: psycopg.Connection
+) -> None:
+    """On a shared server the warehouse admin is not a superuser but owns the schema and the
+    tables it created: bootstrap must still succeed and only skip the pg_catalog hardening."""
+    from app.warehouse.bootstrap import WAREHOUSE_TABLES, apply_schema
+
+    relations = [*WAREHOUSE_TABLES, "v_customers_masked", "v_employees_masked"]
+    wh_admin.execute("DROP ROLE IF EXISTS t2s_limited")
+    wh_admin.execute("CREATE ROLE t2s_limited LOGIN CREATEROLE PASSWORD 'limited-pw'")
+    wh_admin.execute("ALTER SCHEMA public OWNER TO t2s_limited")
+    # PG16: CREATEROLE only manages roles it has ADMIN on (it would, having created them).
+    wh_admin.execute("GRANT wh_viewer, wh_analyst TO t2s_limited WITH ADMIN OPTION")
+    for name in relations:
+        wh_admin.execute(f"ALTER TABLE {name} OWNER TO t2s_limited")
+    try:
+        dsn = pg_settings.warehouse_dsn("admin").replace(
+            "postgres:postgres@", "t2s_limited:limited-pw@"
+        )
+        with psycopg.connect(dsn, autocommit=True) as conn:
+            apply_schema(conn, pg_settings)  # must not raise
+    finally:
+        wh_admin.execute("ALTER SCHEMA public OWNER TO postgres")
+        for name in relations:
+            wh_admin.execute(f"ALTER TABLE {name} OWNER TO postgres")
+        wh_admin.execute("DROP OWNED BY t2s_limited")
+        wh_admin.execute("DROP ROLE t2s_limited")
