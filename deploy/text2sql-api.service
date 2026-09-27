@@ -9,9 +9,11 @@ Group=text2sql
 WorkingDirectory=/opt/text2sql/app/backend
 Environment=GIT_SHA=%GIT_SHA%
 Environment=PYTHONUNBUFFERED=1
-ExecStart=/opt/text2sql/app/backend/.venv/bin/uvicorn app.main:create_app --factory --host 127.0.0.1 --port 8021 --workers 1 --proxy-headers --forwarded-allow-ips 127.0.0.1
+ExecStart=/opt/text2sql/app/backend/.venv/bin/uvicorn app.main:create_app --factory --host 127.0.0.1 --port 8021 --workers 1 --proxy-headers --forwarded-allow-ips 127.0.0.1 --timeout-graceful-shutdown 5
 Restart=always
-RestartSec=3
+RestartSec=2
+# Long-lived SSE streams would otherwise hold shutdown until systemd's 90 s default.
+TimeoutStopSec=10
 MemoryMax=800M
 NoNewPrivileges=true
 PrivateTmp=true

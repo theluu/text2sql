@@ -11,6 +11,7 @@ Environment=PYTHONUNBUFFERED=1
 ExecStart=/opt/text2sql/app/backend/.venv/bin/arq app.worker.WorkerSettings
 Restart=always
 RestartSec=5
+TimeoutStopSec=20
 MemoryMax=600M
 NoNewPrivileges=true
 PrivateTmp=true

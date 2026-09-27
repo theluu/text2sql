@@ -16,7 +16,7 @@ SSH_OPTS=(-o ControlMaster=auto -o "ControlPath=$HOME/.ssh/cm/%r@%h:%p" -o Contr
 cd "$ROOT"
 [ -z "$(git status --porcelain -- backend frontend)" ] || { echo "backend/ or frontend/ has uncommitted changes" >&2; exit 1; }
 (cd frontend && npm run build >/dev/null)
-git archive --format=tar.gz -o "$TMP/backend.tar.gz" HEAD backend
+git archive --format=tar.gz -o "$TMP/backend.tar.gz" HEAD backend deploy
 COPYFILE_DISABLE=1 tar -czf "$TMP/web.tar.gz" -C frontend/dist .
 scp -q "${SSH_OPTS[@]}" "$TMP/backend.tar.gz" "$TMP/web.tar.gz" "$HOST:/tmp/"
 
@@ -33,7 +33,9 @@ sudo -u text2sql -H env UV_PYTHON_INSTALL_DIR=/opt/text2sql/.python UV_CACHE_DIR
 sudo -u text2sql .venv/bin/python -m app.cli bootstrap 2>&1 | grep -iE "error|hardening_skipped" || true   # idempotent: migrations + eval cases
 # Function-level revokes need the superuser (t2s_admin is not one).
 (cd /tmp && sudo -u postgres psql -q -v ON_ERROR_STOP=1 -d t2s_warehouse < "$APP/backend/app/warehouse/schema/04_hardening.sql")
-sed -i "s/^Environment=GIT_SHA=.*/Environment=GIT_SHA=$SHA/" /etc/systemd/system/text2sql-api.service /etc/systemd/system/text2sql-worker.service
+for unit in text2sql-api text2sql-worker; do
+  sed "s/%GIT_SHA%/$SHA/" "$APP/deploy/$unit.service" > "/etc/systemd/system/$unit.service"
+done
 systemctl daemon-reload
 systemctl restart text2sql-api text2sql-worker
 rm -rf "$WEB.new" && mkdir -p "$WEB.new" && tar -xzf /tmp/web.tar.gz -C "$WEB.new"
