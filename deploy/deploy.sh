@@ -17,7 +17,7 @@ cd "$ROOT"
 [ -z "$(git status --porcelain -- backend frontend)" ] || { echo "backend/ or frontend/ has uncommitted changes" >&2; exit 1; }
 (cd frontend && npm run build >/dev/null)
 git archive --format=tar.gz -o "$TMP/backend.tar.gz" HEAD backend
-tar -czf "$TMP/web.tar.gz" -C frontend/dist .
+COPYFILE_DISABLE=1 tar -czf "$TMP/web.tar.gz" -C frontend/dist .
 scp -q "${SSH_OPTS[@]}" "$TMP/backend.tar.gz" "$TMP/web.tar.gz" "$HOST:/tmp/"
 
 ssh "${SSH_OPTS[@]}" "$HOST" bash -s -- "$SHA" <<'REMOTE'
