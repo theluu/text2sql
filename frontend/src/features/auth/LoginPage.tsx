@@ -1,5 +1,5 @@
 import { useRouter, useSearch } from '@tanstack/react-router'
-import { Code2, FileText } from 'lucide-react'
+import { FileText } from 'lucide-react'
 import { type FormEvent, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { BrandMark } from '@/components/BrandMark'
@@ -16,7 +16,6 @@ const DEMO_ACCOUNTS: { role: Role; email: string }[] = [
 ]
 const DEMO_PASSWORD = 'demo1234'
 export const OVERVIEW_PDF = '/Datum_Text2SQL_Overview.pdf'
-export const SOURCE_URL = 'https://github.com/theluu/text2sql'
 
 function ProjectLinks({ inverted = false }: { inverted?: boolean }) {
   const { t } = useTranslation()
@@ -32,10 +31,6 @@ function ProjectLinks({ inverted = false }: { inverted?: boolean }) {
           <span className="block text-sm font-medium">{t('brand.overview')}</span>
           <span className={`block text-xs ${muted}`}>{t('brand.overviewHint')}</span>
         </span>
-      </a>
-      <a href={SOURCE_URL} target="_blank" rel="noopener" className={`flex items-center gap-2 rounded-[6px] border px-4 py-3 text-sm transition-colors ${card}`}>
-        <Code2 size={16} aria-hidden className={muted} />
-        {t('brand.source')}
       </a>
     </div>
   )

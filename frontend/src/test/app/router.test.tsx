@@ -56,12 +56,12 @@ describe('routing & login', () => {
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
   })
 
-  it('links the project overview PDF and the source code from the login page', async () => {
+  it('links the project overview PDF, but not the source code, from the login page', async () => {
     renderAt('/login')
     const overview = await screen.findAllByRole('link', { name: new RegExp(vi_.brand.overview.replace(/[()]/g, '\\$&')) })
     expect(overview[0]).toHaveAttribute('href', '/Datum_Text2SQL_Overview.pdf')
     expect(overview[0]).toHaveAttribute('target', '_blank')
-    expect(screen.getAllByRole('link', { name: vi_.brand.source })[0]).toHaveAttribute('href', 'https://github.com/theluu/text2sql')
+    expect(screen.queryByRole('link', { name: /github/i })).not.toBeInTheDocument()
   })
 
   it('demo account buttons fill the form', async () => {
